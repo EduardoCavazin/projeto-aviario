@@ -1,20 +1,20 @@
-import 'package:projeto_avirario/domain/propriedades.dart';
+import 'package:projeto_avirario/domain/propriedade.dart';
 
 class Usuario {
 
   String name;
   String email;
   String password;
-  List<Propriedades> propriedades;
+  List<Propriedade> propriedades;
 
   Usuario({
     required this.name, 
     required this.email, 
     required this.password,
-    List<Propriedades>? propriedades,
-    }) : propriedades = propriedades ?? <Propriedades>[];
+    List<Propriedade>? propriedades,
+    }) : propriedades = propriedades ?? <Propriedade>[];
 
-  void addPropriedade(Propriedades propriedade) {
+  void addPropriedade(Propriedade propriedade) {
     propriedades.add(propriedade);
   }
 
@@ -26,7 +26,7 @@ class Usuario {
     }
   }
 
-  void editPropriedade(int index, Propriedades propriedade) {
+  void editPropriedade(int index, Propriedade propriedade) {
     if(index >= 0 && index < propriedades.length) {
       propriedades[index] = propriedade;
     }else{
@@ -34,7 +34,7 @@ class Usuario {
     }
   }
 
-  List<Propriedades> visualizarPropriedades(){
+  List<Propriedade> visualizarPropriedades(){
     return List.unmodifiable(propriedades);
   }
 
