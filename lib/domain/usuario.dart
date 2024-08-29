@@ -1,13 +1,13 @@
 import 'package:projeto_avirario/domain/propriedades.dart';
 
-class User {
+class Usuario {
 
   String name;
   String email;
   String password;
   List<Propriedades> propriedades;
 
-  User({
+  Usuario({
     required this.name, 
     required this.email, 
     required this.password,
