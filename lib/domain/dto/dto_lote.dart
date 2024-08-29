@@ -3,13 +3,13 @@ class DTOLote {
   DateTime dataEntrada;
   int quantidadeAves;
   double pesoMedio;
-  double quantidadeRacao;
+  double quantidadeRacaoInicial;
 
   DTOLote({
     this.id,
     required this.dataEntrada,
     required this.quantidadeAves,
     required this.pesoMedio,
-    required this.quantidadeRacao,
+    required this.quantidadeRacaoInicial,
   });
 }

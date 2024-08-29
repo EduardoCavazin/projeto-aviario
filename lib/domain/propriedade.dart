@@ -1,22 +1,81 @@
 import 'package:projeto_avirario/domain/aviario.dart';
+import 'package:projeto_avirario/domain/dto/dto_propriedade.dart';
+import 'package:projeto_avirario/domain/interface/i_dao_propriedade.dart';
 
 class Propriedade {
-
+  dynamic id;
   String nome;
   String localizacao;
   int qtdAviario;
   List<Aviario> aviarios;
 
-  Propriedade({
-    required this.nome, 
-    required this.localizacao, 
-    required this.qtdAviario,
-    List<Aviario>? aviarios,
-    }) : aviarios = aviarios ?? <Aviario>[];
+  Propriedade({required DTOPropriedade dto})
+      : id = dto.id,
+        nome = dto.nome,
+        localizacao = dto.localizacao,
+        qtdAviario = dto.qtdAviario,
+        aviarios = dto.aviarios;
 
-    void gerarRelatorio(){
-      //TODO: Implementar
+  DTOPropriedade salvar(IDAOPropriedade dao) {
+    return dao.salvar(DTOPropriedade(
+      id: id,
+      nome: nome,
+      localizacao: localizacao,
+      qtdAviario: qtdAviario,
+      aviarios: aviarios,
+    ));
+  }
+
+  void deletar(IDAOPropriedade dao) {
+    dao.deletar(id);
+  }
+
+  static Propriedade? buscarPorId(IDAOPropriedade dao, dynamic id) {
+    final dto = dao.buscarPorId(id);
+    if (dto != null) {
+      return Propriedade(dto: dto);
     }
+    return null;
+  }
 
+  static List<Propriedade> buscarTodos(IDAOPropriedade dao) {
+    return dao.buscarTodos().map((dto) => Propriedade(dto: dto)).toList();
+  }
 
+  void gerarRelatorio() {
+    // Implementação básica do relatório
+    print('Relatório da Propriedade: $nome');
+    print('Localização: $localizacao');
+    print('Número de Aviários: $qtdAviario');
+    print('Detalhes dos Aviários:');
+    for (var aviario in aviarios) {
+      aviario.gerarRelatorio();
+    }
+  }
+
+  void addAviario(Aviario aviario) {
+    aviarios.add(aviario);
+    qtdAviario = aviarios.length;
+  }
+
+  void removeAviario(int index) {
+    if (index >= 0 && index < aviarios.length) {
+      aviarios.removeAt(index);
+      qtdAviario = aviarios.length;
+    } else {
+      throw Exception('Aviário não encontrado');
+    }
+  }
+
+  void editAviario(int index, Aviario aviario) {
+    if (index >= 0 && index < aviarios.length) {
+      aviarios[index] = aviario;
+    } else {
+      throw Exception('Aviário não encontrado');
+    }
+  }
+
+  List<Aviario> visualizarAviarios() {
+    return List.unmodifiable(aviarios);
+  }
 }

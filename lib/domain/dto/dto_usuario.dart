@@ -4,5 +4,10 @@ class DTOUsuario {
   String email;
   String senha;
 
-  DTOUsuario({this.id, required this.nome, required this.email, required this.senha});
+  DTOUsuario({
+    this.id,
+    required this.nome,
+    required this.email,
+    required this.senha,
+  });
 }

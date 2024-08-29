@@ -4,5 +4,5 @@ abstract class IDAOLote {
   DTOLote salvar(DTOLote dto);
   DTOLote? buscarPorId(dynamic id);
   List<DTOLote> buscarTodos();
-  void remover(dynamic id);
+  void deletar(dynamic id);
 }

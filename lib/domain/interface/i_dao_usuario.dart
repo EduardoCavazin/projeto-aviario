@@ -4,6 +4,6 @@ abstract class IDAOUsuario {
   DTOUsuario salvar(DTOUsuario dto);
   DTOUsuario? buscarPorId(dynamic id);
   List<DTOUsuario> buscarTodos();
-  void remover(dynamic id);
+  void deletar(dynamic id);
 
 }
