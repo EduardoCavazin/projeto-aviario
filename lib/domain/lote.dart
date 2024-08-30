@@ -6,7 +6,7 @@ class Lote {
   DateTime dataEntrada;
   int quantidadeAves;
   double pesoMedio;
-  double quantidadeRacaoInicial;
+  double qtdRacaoInicial;
 
   Lote({
     required DTOLote dto,
@@ -14,7 +14,7 @@ class Lote {
         dataEntrada = dto.dataEntrada,
         quantidadeAves = dto.quantidadeAves,
         pesoMedio = dto.pesoMedio,
-        quantidadeRacaoInicial = dto.quantidadeRacaoInicial;
+        qtdRacaoInicial = dto.qtdRacaoInicial;
 
   DTOLote salvar(IDAOLote dao) {
     return dao.salvar(DTOLote(
@@ -22,7 +22,7 @@ class Lote {
       dataEntrada: dataEntrada,
       quantidadeAves: quantidadeAves,
       pesoMedio: pesoMedio,
-      quantidadeRacaoInicial: quantidadeRacaoInicial,
+      qtdRacaoInicial: qtdRacaoInicial,
     ));
   }
 
@@ -50,19 +50,19 @@ class Lote {
     // Implementação do registro de dados
     quantidadeAves -= novasMortes;
     pesoMedio = novoPesoMedio;
-    quantidadeRacaoInicial += novaQuantidadeRacao;
+    qtdRacaoInicial += novaQuantidadeRacao;
   }
 
   void atualizarDados({
     required DateTime novaDataEntrada,
     required int novaQuantidadeAves,
     required double novoPesoMedio,
-    required double novaQuantidadeRacaoInicial,
+    required double novaqtdRacaoInicial,
   }) {
     dataEntrada = novaDataEntrada;
     quantidadeAves = novaQuantidadeAves;
     pesoMedio = novoPesoMedio;
-    quantidadeRacaoInicial = novaQuantidadeRacaoInicial;
+    qtdRacaoInicial = novaqtdRacaoInicial;
   }
 
   void gerarRelatorio() {

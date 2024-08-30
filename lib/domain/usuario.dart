@@ -32,8 +32,8 @@ class Usuario {
     return null;
   }
 
-  static List<Usuario> buscarTodos(IDAOUsuario dao) {
-    return dao.buscarTodos().map((dto) => Usuario(dto: dto)).toList();
+  static List<Usuario> buscarUsuarios(IDAOUsuario dao) {
+    return dao.buscarUsuarios().map((dto) => Usuario(dto: dto)).toList();
   }
 
   void addPropriedade(Propriedade propriedade) {

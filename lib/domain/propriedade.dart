@@ -26,8 +26,8 @@ class Propriedade {
     ));
   }
 
-  void deletar(IDAOPropriedade dao) {
-    dao.deletar(id);
+  void deletarPropriedade(IDAOPropriedade dao) {
+    dao.deletarPropriedade(id);
   }
 
   static Propriedade? buscarPorId(IDAOPropriedade dao, dynamic id) {
@@ -38,8 +38,8 @@ class Propriedade {
     return null;
   }
 
-  static List<Propriedade> buscarTodos(IDAOPropriedade dao) {
-    return dao.buscarTodos().map((dto) => Propriedade(dto: dto)).toList();
+  static List<Propriedade> buscarPropriedade(IDAOPropriedade dao) {
+    return dao.buscarPropriedade().map((dto) => Propriedade(dto: dto)).toList();
   }
 
   void gerarRelatorio() {
