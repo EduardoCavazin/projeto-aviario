@@ -14,7 +14,12 @@ class Propriedade {
         nome = dto.nome,
         localizacao = dto.localizacao,
         qtdAviario = dto.qtdAviario,
-        aviarios = dto.aviarios;
+        aviarios = dto.aviarios
+        {
+    nomeVazio();
+    localizacaoVazia();
+    
+        }
 
   DTOPropriedade salvar(IDAOPropriedade dao) {
     return dao.salvar(DTOPropriedade(
@@ -77,5 +82,23 @@ class Propriedade {
 
   List<Aviario> visualizarAviarios() {
     return List.unmodifiable(aviarios);
+  }
+
+  void nomeVazio(){
+    if(nome.isEmpty){
+      throw Exception('Nome da propriedade não pode ser vazio');
+    }
+  }
+
+  void localizacaoVazia(){
+    if(localizacao.isEmpty){
+      throw Exception('Localização da propriedade não pode ser vazia');
+    }
+  }
+
+  void qtdAviarioVazia(){
+    if(qtdAviario <= 0){
+      throw Exception('Quantidade de aviários não pode ser vazia');
+    }
   }
 }

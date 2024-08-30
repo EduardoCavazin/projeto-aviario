@@ -14,7 +14,12 @@ class Usuario {
         nome = dto.nome,
         email = dto.email,
         senha = dto.senha,
-        propriedades = propriedades ?? <Propriedade>[];
+        propriedades = propriedades ?? <Propriedade>[]
+        {
+    nomeVazio();
+    emailVazio();
+    senhaVazia();
+        }
 
   DTOUsuario salvar(IDAOUsuario dao) {
     return dao.salvar(DTOUsuario(id: id, nome: nome, email: email, senha: senha));
@@ -63,6 +68,24 @@ class Usuario {
   void gerarRelatorio() {
     for (var propriedade in propriedades) {
       propriedade.gerarRelatorio();
+    }
+  }
+
+  void nomeVazio(){
+    if(nome.isEmpty){
+      throw Exception('Nome não pode ser vazio');
+    }
+  }
+
+  void emailVazio(){
+    if(email.isEmpty){
+      throw Exception('Email não pode ser vazio');
+    }
+  }
+
+  void senhaVazia(){
+    if(senha.isEmpty){
+      throw Exception('Senha não pode ser vazia');
     }
   }
 }

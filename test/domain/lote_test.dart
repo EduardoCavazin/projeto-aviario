@@ -32,7 +32,6 @@ class MockDAOLote implements IDAOLote {
 }
 
 void main() {
-
   late MockDAOLote dao;
 
   setUp(() {
@@ -77,5 +76,41 @@ void main() {
     expect(dtoSalvo.id, isNotNull);
 
     lote.deletar(dao);
+  });
+
+  test('Validar quantidade de aves', () {
+    expect(
+        () => Lote(
+                dto: DTOLote(
+                    dataEntrada: DateTime.now(),
+                    quantidadeAves: 10000,
+                    pesoMedio: 2.5,
+                    qtdRacaoInicial: 200))
+            .qtdAvesVazia(),
+        throwsException);
+  });
+
+  test('Validar peso médio', () {
+    expect(
+        () => Lote(
+                dto: DTOLote(
+                    dataEntrada: DateTime.now(),
+                    quantidadeAves: 15000,
+                    pesoMedio: 0,
+                    qtdRacaoInicial: 200))
+            .pesoMedioVazio(),
+        throwsException);
+  });
+
+  test('Validar quantidade de ração inicial', () {
+    expect(
+        () => Lote(
+                dto: DTOLote(
+                    dataEntrada: DateTime.now(),
+                    quantidadeAves: 15000,
+                    pesoMedio: 2.5,
+                    qtdRacaoInicial: 0))
+            .qtdRacaoInicialVazia(),
+        throwsException);
   });
 }

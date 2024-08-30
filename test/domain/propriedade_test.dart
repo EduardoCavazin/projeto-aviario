@@ -83,4 +83,43 @@ void main() {
 
     propriedade.deletarPropriedade(dao);
   });
+
+   test('Nome da propriedade vazio', () {
+    expect(
+      () => Propriedade(
+        dto: DTOPropriedade(
+          nome: '', 
+          localizacao: 'Campo', 
+          qtdAviario: 3
+        )
+      ),
+      throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Nome da propriedade não pode ser vazio'))),
+    );
+  });
+
+  test('Localização da propriedade vazia', () {
+    expect(
+      () => Propriedade(
+        dto: DTOPropriedade(
+          nome: 'Fazenda', 
+          localizacao: '', 
+          qtdAviario: 3
+        )
+      ),
+      throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Localização da propriedade não pode ser vazia'))),
+    );
+  });
+
+  test('Quantidade de aviários igual ou menor que zero', () {
+    expect(
+      () => Propriedade(
+        dto: DTOPropriedade(
+          nome: 'Fazenda', 
+          localizacao: 'Campo', 
+          qtdAviario: 0
+        )
+      ),
+      throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Quantidade de aviários não pode ser vazia'))),
+    );
+  });
 }

@@ -68,4 +68,23 @@ class Lote {
   void gerarRelatorio() {
     // TODO: logica para gerar relatório
   }
+
+  void qtdAvesVazia() {
+    if (quantidadeAves <= 15000 && quantidadeAves < 80000) {
+      throw Exception('Quantidade de aves deve estar entre 15k e 80k');
+    }
+  }
+
+  void pesoMedioVazio() {
+    if (pesoMedio <= 0) {
+      throw Exception('Peso médio deve ser maior que zero');
+    }
+  }
+
+  void qtdRacaoInicialVazia() {
+    if (qtdRacaoInicial <= 0 ) {
+      throw Exception('Quantidade de ração inicial deve ser maior que zero');
+    }
+  }
+  
 }
