@@ -24,6 +24,9 @@ void main() async {
           for (var script in insertLotes) {
             await db.execute(script);
           }
+          for (var script in insertAviarios) {
+            await db.execute(script);
+          }
     });
 
     // Verificar a tabela de usuários
@@ -37,5 +40,9 @@ void main() async {
     // Verificar a tabela de lotes
     var lotes = await db.rawQuery('SELECT * FROM lote');
     expect(lotes.length, 3);
+
+    // Verificar a tabela de aviários
+    var aviarios = await db.rawQuery('SELECT * FROM aviario');
+    expect(aviarios.length, 3);
   });
 }

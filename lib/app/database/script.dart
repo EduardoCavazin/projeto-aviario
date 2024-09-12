@@ -23,6 +23,13 @@ const createTables = [
       pesoMedio REAL NOT NULL,
       qtdRacaoInicial REAL NOT NULL
     )
+  ''',
+  '''
+    CREATE TABLE aviario (
+      id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      nome VARCHAR(100) NOT NULL,
+      capacidade INTEGER NOT NULL
+    )
   '''
 ];
 
@@ -68,5 +75,20 @@ const insertLotes = [
   '''
     INSERT INTO lote (dataEntrada, quantidadeAves, pesoMedio, qtdRacaoInicial)
     VALUES ('2024-03-01', 18000, 2.4, 550.0)
+  '''
+];
+
+const insertAviarios = [
+  '''
+    INSERT INTO aviario (nome, capacidade)
+    VALUES ('Aviário 1', 20000)
+  ''',
+  '''
+    INSERT INTO aviario (nome, capacidade)
+    VALUES ('Aviário 2', 25000)
+  ''',
+  '''
+    INSERT INTO aviario (nome, capacidade)
+    VALUES ('Aviário 3', 18000)
   '''
 ];

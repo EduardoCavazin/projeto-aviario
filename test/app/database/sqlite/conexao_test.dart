@@ -33,6 +33,7 @@ void main() {
     expect(tables.any((table) => table['name'] == 'usuario'), true);
     expect(tables.any((table) => table['name'] == 'propriedade'), true);
     expect(tables.any((table) => table['name'] == 'lote'), true);
+    expect(tables.any((table) => table['name'] == 'aviario'), true);
 
     var listUsuarios = await db.rawQuery('SELECT * FROM usuario');
     expect(listUsuarios.length, greaterThanOrEqualTo(0));
@@ -42,5 +43,8 @@ void main() {
 
     var listLotes = await db.rawQuery('SELECT * FROM lote');
     expect(listLotes.length, greaterThanOrEqualTo(0));
+
+    var listAviarios = await db.rawQuery('SELECT * FROM aviario');
+    expect(listAviarios.length, greaterThanOrEqualTo(0));
   });
 }
