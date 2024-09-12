@@ -15,12 +15,9 @@ class Conexao {
         path,
         version: 1,
         onCreate: (db, version) async {
-          for (var tableScript in createTables) {
-            await db.execute(tableScript);
-          }
-          for (var insertScript in insertUsuarios) {
-            await db.execute(insertScript);
-          }
+          createTables.forEach(db.execute);
+          insertUsuarios.forEach(db.execute);
+          insertPropriedades.forEach(db.execute);
         },
       );
       isInitialized = true;

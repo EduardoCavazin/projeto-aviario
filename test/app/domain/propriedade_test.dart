@@ -7,28 +7,31 @@ class MockDAOPropriedade implements IDAOPropriedade {
   List<DTOPropriedade> propriedades = [];
 
   @override
-  DTOPropriedade salvar(DTOPropriedade dto) {
+  Future<DTOPropriedade> salvar(DTOPropriedade dto) async {
     dto.id ??= propriedades.length + 1;
     propriedades.add(dto);
     return dto;
   }
 
   @override
-  void deletarPropriedade(dynamic id) {
+  Future<void> deletarPropriedade(dynamic id) async {
     propriedades.removeWhere((propriedade) => propriedade.id == id);
   }
 
   @override
-  DTOPropriedade? buscarPorId(dynamic id) {
-    return propriedades.firstWhere(
-      (propriedade) => propriedade.id == id,
-      orElse: () {
-        throw Exception('Propriedade não encontrada');
-      });  // Retorna null se não encontrado
+  Future<DTOPropriedade?> buscarPorId(dynamic id) async {
+    try {
+      return propriedades.firstWhere(
+        (propriedade) => propriedade.id == id,
+      );
+    } catch (e) {
+      // Retorna null se não encontrado
+      return null;
+    }
   }
 
   @override
-  List<DTOPropriedade> buscarPropriedade() {
+  Future<List<DTOPropriedade>> buscarPropriedade() async {
     return propriedades;
   }
 }
@@ -40,7 +43,7 @@ void main() {
     dao = MockDAOPropriedade();
   });
 
-  test('Salvar propriedade', () {
+  test('Salvar propriedade', () async {
     final propriedade = Propriedade(
       dto: DTOPropriedade(
         nome: 'Fazenda 1',
@@ -48,13 +51,13 @@ void main() {
         qtdAviario: 5,
       ),
     );
-    final dtoSalvo = propriedade.salvar(dao);
+    final dtoSalvo = await propriedade.salvar(dao);
 
     expect(dtoSalvo.id, isNotNull);
-    expect(dao.buscarPropriedade().length, 1);
+    expect((await dao.buscarPropriedade()).length, 1);
   });
 
-  test('Buscar propriedade por ID', () {
+  test('Buscar propriedade por ID', () async {
     final propriedade = Propriedade(
       dto: DTOPropriedade(
         nome: 'Fazenda 2',
@@ -62,13 +65,13 @@ void main() {
         qtdAviario: 3,
       ),
     );
-    final dtoSalvo = propriedade.salvar(dao);
+    final dtoSalvo = await propriedade.salvar(dao);
 
-    final propriedadeBuscada = Propriedade.buscarPorId(dao, dtoSalvo.id);
+    final propriedadeBuscada = await Propriedade.buscarPorId(dao, dtoSalvo.id);
     expect(propriedadeBuscada?.nome, 'Fazenda 2');
   });
 
-  test('Deletar propriedade', () {
+  test('Deletar propriedade', () async {
     final propriedade = Propriedade(
       dto: DTOPropriedade(
         nome: 'Fazenda 3',
@@ -76,50 +79,43 @@ void main() {
         qtdAviario: 2,
       ),
     );
-    final dtoSalvo = propriedade.salvar(dao);
+    final dtoSalvo = await propriedade.salvar(dao);
 
     expect(dtoSalvo.id, isNotNull);
-    expect(dao.buscarPropriedade().length, 1);
+    expect((await dao.buscarPropriedade()).length, 1);
 
-    propriedade.deletarPropriedade(dao);
+    await propriedade.deletarPropriedade(dao);
+    expect((await dao.buscarPropriedade()).length, 0);
   });
 
-   test('Nome da propriedade vazio', () {
+  test('Nome da propriedade vazio', () {
     expect(
-      () => Propriedade(
-        dto: DTOPropriedade(
-          nome: '', 
-          localizacao: 'Campo', 
-          qtdAviario: 3
-        )
+      () async => Propriedade(
+        dto: DTOPropriedade(nome: '', localizacao: 'Campo', qtdAviario: 3),
       ),
-      throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Nome da propriedade não pode ser vazio'))),
+      throwsA(isA<Exception>().having((e) => e.toString(), 'message',
+          contains('Nome da propriedade não pode ser vazio'))),
     );
   });
 
   test('Localização da propriedade vazia', () {
     expect(
-      () => Propriedade(
-        dto: DTOPropriedade(
-          nome: 'Fazenda', 
-          localizacao: '', 
-          qtdAviario: 3
-        )
+      () async => Propriedade(
+        dto: DTOPropriedade(nome: 'Fazenda', localizacao: '', qtdAviario: 3),
       ),
-      throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Localização da propriedade não pode ser vazia'))),
+      throwsA(isA<Exception>().having((e) => e.toString(), 'message',
+          contains('Localização da propriedade não pode ser vazia'))),
     );
   });
 
   test('Quantidade de aviários igual ou menor que zero', () {
     expect(
-      () => Propriedade(
+      () async => Propriedade(
         dto: DTOPropriedade(
-          nome: 'Fazenda', 
-          localizacao: 'Campo', 
-          qtdAviario: 0
-        )
+            nome: 'Fazenda', localizacao: 'Campo', qtdAviario: 0),
       ),
-      throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Quantidade de aviários não pode ser vazia'))),
+      throwsA(isA<Exception>().having((e) => e.toString(), 'message',
+          contains('Quantidade de aviários não pode ser vazia'))),
     );
   });
 }

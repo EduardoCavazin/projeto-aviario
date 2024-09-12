@@ -14,15 +14,14 @@ class Propriedade {
         nome = dto.nome,
         localizacao = dto.localizacao,
         qtdAviario = dto.qtdAviario,
-        aviarios = dto.aviarios
-        {
+        aviarios = dto.aviarios {
     nomeVazio();
     localizacaoVazia();
-    
-        }
+    qtdAviarioVazia();
+  }
 
-  DTOPropriedade salvar(IDAOPropriedade dao) {
-    return dao.salvar(DTOPropriedade(
+  Future<DTOPropriedade> salvar(IDAOPropriedade dao) async {
+    return await dao.salvar(DTOPropriedade(
       id: id,
       nome: nome,
       localizacao: localizacao,
@@ -31,24 +30,24 @@ class Propriedade {
     ));
   }
 
-  void deletarPropriedade(IDAOPropriedade dao) {
-    dao.deletarPropriedade(id);
+  Future<void> deletarPropriedade(IDAOPropriedade dao) async {
+    await dao.deletarPropriedade(id);
   }
 
-  static Propriedade? buscarPorId(IDAOPropriedade dao, dynamic id) {
-    final dto = dao.buscarPorId(id);
+  static Future<Propriedade?> buscarPorId(IDAOPropriedade dao, dynamic id) async {
+    final dto = await dao.buscarPorId(id);
     if (dto != null) {
       return Propriedade(dto: dto);
     }
     return null;
   }
 
-  static List<Propriedade> buscarPropriedade(IDAOPropriedade dao) {
-    return dao.buscarPropriedade().map((dto) => Propriedade(dto: dto)).toList();
+  static Future<List<Propriedade>> buscarPropriedade(IDAOPropriedade dao) async {
+    final dtos = await dao.buscarPropriedade();
+    return dtos.map((dto) => Propriedade(dto: dto)).toList();
   }
 
   void gerarRelatorio() {
-    // Implementação básica do relatório
     print('Relatório da Propriedade: $nome');
     print('Localização: $localizacao');
     print('Número de Aviários: $qtdAviario');
@@ -84,20 +83,20 @@ class Propriedade {
     return List.unmodifiable(aviarios);
   }
 
-  void nomeVazio(){
-    if(nome.isEmpty){
+  void nomeVazio() {
+    if (nome.isEmpty) {
       throw Exception('Nome da propriedade não pode ser vazio');
     }
   }
 
-  void localizacaoVazia(){
-    if(localizacao.isEmpty){
+  void localizacaoVazia() {
+    if (localizacao.isEmpty) {
       throw Exception('Localização da propriedade não pode ser vazia');
     }
   }
 
-  void qtdAviarioVazia(){
-    if(qtdAviario <= 0){
+  void qtdAviarioVazia() {
+    if (qtdAviario <= 0) {
       throw Exception('Quantidade de aviários não pode ser vazia');
     }
   }
