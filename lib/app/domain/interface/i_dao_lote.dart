@@ -1,4 +1,4 @@
-import 'package:projeto_avirario/domain/dto/dto_lote.dart';
+import 'package:projeto_avirario/app/domain/dto/dto_lote.dart';
 
 abstract class IDAOLote {
   DTOLote salvar(DTOLote dto);

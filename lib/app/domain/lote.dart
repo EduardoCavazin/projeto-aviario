@@ -1,5 +1,5 @@
-import 'package:projeto_avirario/domain/dto/dto_lote.dart';
-import 'package:projeto_avirario/domain/interface/i_dao_lote.dart';
+import 'package:projeto_avirario/app/domain/dto/dto_lote.dart';
+import 'package:projeto_avirario/app/domain/interface/i_dao_lote.dart';
 
 class Lote {
   dynamic id;

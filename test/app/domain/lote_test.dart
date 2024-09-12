@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:projeto_avirario/domain/lote.dart';
-import 'package:projeto_avirario/domain/dto/dto_lote.dart';
-import 'package:projeto_avirario/domain/interface/i_dao_lote.dart';
+import 'package:projeto_avirario/app/domain/lote.dart';
+import 'package:projeto_avirario/app/domain/dto/dto_lote.dart';
+import 'package:projeto_avirario/app/domain/interface/i_dao_lote.dart';
 
 class MockDAOLote implements IDAOLote {
   List<DTOLote> lotes = [];

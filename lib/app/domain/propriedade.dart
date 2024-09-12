@@ -1,6 +1,6 @@
-import 'package:projeto_avirario/domain/aviario.dart';
-import 'package:projeto_avirario/domain/dto/dto_propriedade.dart';
-import 'package:projeto_avirario/domain/interface/i_dao_propriedade.dart';
+import 'package:projeto_avirario/app/domain/aviario.dart';
+import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
+import 'package:projeto_avirario/app/domain/interface/i_dao_propriedade.dart';
 
 class Propriedade {
   dynamic id;

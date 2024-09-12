@@ -1,4 +1,4 @@
-import 'package:projeto_avirario/domain/aviario.dart';
+import 'package:projeto_avirario/app/domain/aviario.dart';
 
 class DTOPropriedade {
   dynamic id;

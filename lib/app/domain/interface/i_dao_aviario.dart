@@ -1,4 +1,4 @@
-import 'package:projeto_avirario/domain/dto/dto_aviario.dart';
+import 'package:projeto_avirario/app/domain/dto/dto_aviario.dart';
 
 abstract class IDAOAviario {
   DTOAviario salvar(DTOAviario dto);

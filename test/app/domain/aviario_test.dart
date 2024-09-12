@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:projeto_avirario/domain/aviario.dart';
-import 'package:projeto_avirario/domain/dto/dto_aviario.dart';
-import 'package:projeto_avirario/domain/interface/i_dao_aviario.dart';
+import 'package:projeto_avirario/app/domain/aviario.dart';
+import 'package:projeto_avirario/app/domain/dto/dto_aviario.dart';
+import 'package:projeto_avirario/app/domain/interface/i_dao_aviario.dart';
 
 class MockDAOAviario implements IDAOAviario {
   List<DTOAviario> aviarios = [];
@@ -36,7 +36,7 @@ void main() {
     final dao = MockDAOAviario();
 
     test('Salvar aviario', () {
-      final aviario = Aviario(dto: DTOAviario(nome: 'Aviário 1', capacidade: 2000, tipo: 'Tipo A'));
+      final aviario = Aviario(dto: DTOAviario(nome: 'Aviário 1', capacidade: 2000));
       final dtoSalvo = aviario.salvar(dao);
 
       expect(dtoSalvo.id, isNotNull);
@@ -44,7 +44,7 @@ void main() {
     });
 
     test('Buscar aviario por ID', () {
-      final aviario = Aviario(dto: DTOAviario(nome: 'Aviário 2', capacidade: 2500, tipo: 'Tipo B'));
+      final aviario = Aviario(dto: DTOAviario(nome: 'Aviário 2', capacidade: 2500));
       final dtoSalvo = aviario.salvar(dao);
 
       final aviarioBuscado = Aviario.buscarPorId(dao, dtoSalvo.id);
@@ -52,7 +52,7 @@ void main() {
     });
 
     test('Deletar aviario', () {
-      final aviario = Aviario(dto: DTOAviario(nome: 'Aviário 3', capacidade: 3000, tipo: 'Tipo C'));
+      final aviario = Aviario(dto: DTOAviario(nome: 'Aviário 3', capacidade: 3000));
       final dtoSalvo = aviario.salvar(dao);
 
       expect(dtoSalvo.id, isNotNull);

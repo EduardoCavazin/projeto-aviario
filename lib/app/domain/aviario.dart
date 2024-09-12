@@ -1,25 +1,25 @@
-import 'package:projeto_avirario/domain/dto/dto_aviario.dart';
-import 'package:projeto_avirario/domain/interface/i_dao_aviario.dart';
+import 'package:projeto_avirario/app/domain/dto/dto_aviario.dart';
+import 'package:projeto_avirario/app/domain/interface/i_dao_aviario.dart';
 
 class Aviario {
   dynamic id;
   String nome;
   int capacidade;
-  String tipo;
 
   Aviario({
     required DTOAviario dto,
   })  : id = dto.id,
         nome = dto.nome,
-        capacidade = dto.capacidade,
-        tipo = dto.tipo;
+        capacidade = dto.capacidade
+        {
+    nomeAviario();
+        }
 
   DTOAviario salvar(IDAOAviario dao) {
     return dao.salvar(DTOAviario(
       id: id,
       nome: nome,
-      capacidade: capacidade,
-      tipo: tipo,
+      capacidade: capacidade
     ));
   }
 
@@ -46,10 +46,21 @@ class Aviario {
   }) {
     nome = novoNome;
     capacidade = novaCapacidade;
-    tipo = novoTipo;
   }
 
   void gerarRelatorio() {
     // TODO: Lógica para relatório
+  }
+
+  void nomeAviario(){
+    if(nome.isEmpty){
+      throw Exception('Nome do aviário não pode ser vazio');
+    }
+  }
+
+  void capacidadeAviario(){
+    if(capacidade < 15000 && capacidade > 80000){
+      throw Exception('Capacidade do aviário não pode ser menor que 15k ou maior que 80k');
+    }
   }
 }
