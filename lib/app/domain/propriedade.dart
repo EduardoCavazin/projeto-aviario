@@ -15,9 +15,9 @@ class Propriedade {
         localizacao = dto.localizacao,
         qtdAviario = dto.qtdAviario,
         aviarios = dto.aviarios {
-    nomeVazio();
-    localizacaoVazia();
-    qtdAviarioVazia();
+    _validarNome();
+    _validarLocalizacao();
+    _validarQtdAviarios();
   }
 
   Future<DTOPropriedade> salvar(IDAOPropriedade dao) async {
@@ -31,6 +31,9 @@ class Propriedade {
   }
 
   Future<void> deletarPropriedade(IDAOPropriedade dao) async {
+    if (id == null) {
+      throw Exception('Propriedade não pode ser deletada sem um ID válido.');
+    }
     await dao.deletarPropriedade(id);
   }
 
@@ -67,7 +70,7 @@ class Propriedade {
       aviarios.removeAt(index);
       qtdAviario = aviarios.length;
     } else {
-      throw Exception('Aviário não encontrado');
+      throw Exception('Índice do aviário inválido. Aviário não encontrado.');
     }
   }
 
@@ -75,7 +78,7 @@ class Propriedade {
     if (index >= 0 && index < aviarios.length) {
       aviarios[index] = aviario;
     } else {
-      throw Exception('Aviário não encontrado');
+      throw Exception('Índice do aviário inválido. Aviário não encontrado.');
     }
   }
 
@@ -83,21 +86,22 @@ class Propriedade {
     return List.unmodifiable(aviarios);
   }
 
-  void nomeVazio() {
-    if (nome.isEmpty) {
+  // Validações privadas
+  void _validarNome() {
+    if (nome.trim().isEmpty) {
       throw Exception('Nome da propriedade não pode ser vazio');
     }
   }
 
-  void localizacaoVazia() {
-    if (localizacao.isEmpty) {
+  void _validarLocalizacao() {
+    if (localizacao.trim().isEmpty) {
       throw Exception('Localização da propriedade não pode ser vazia');
     }
   }
 
-  void qtdAviarioVazia() {
+  void _validarQtdAviarios() {
     if (qtdAviario <= 0) {
-      throw Exception('Quantidade de aviários não pode ser vazia');
+      throw Exception('A quantidade de aviários deve ser maior que zero.');
     }
   }
 }
