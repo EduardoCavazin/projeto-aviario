@@ -16,8 +16,8 @@ class Lote {
         pesoMedio = dto.pesoMedio,
         qtdRacaoInicial = dto.qtdRacaoInicial;
 
-  DTOLote salvar(IDAOLote dao) {
-    return dao.salvar(DTOLote(
+  Future<DTOLote> salvar(IDAOLote dao) async {
+    return await dao.salvar(DTOLote(
       id: id,
       dataEntrada: dataEntrada,
       quantidadeAves: quantidadeAves,
@@ -26,20 +26,21 @@ class Lote {
     ));
   }
 
-  void deletar(IDAOLote dao) {
-    dao.deletar(id);
+  Future<void> deletar(IDAOLote dao) async {
+    await dao.deletar(id);
   }
 
-  static Lote? buscarPorId(IDAOLote dao, dynamic id) {
-    final dto = dao.buscarPorId(id);
+  static Future<Lote?> buscarPorId(IDAOLote dao, dynamic id) async {
+    final dto = await dao.buscarPorId(id);
     if (dto != null) {
       return Lote(dto: dto);
     }
     return null;
   }
 
-  static List<Lote> buscarTodos(IDAOLote dao) {
-    return dao.buscarTodos().map((dto) => Lote(dto: dto)).toList();
+  static Future<List<Lote>> buscarTodos(IDAOLote dao) async {
+    final dtos = await dao.buscarTodos();
+    return dtos.map((dto) => Lote(dto: dto)).toList();
   }
 
   void registrarDados({
@@ -57,20 +58,20 @@ class Lote {
     required DateTime novaDataEntrada,
     required int novaQuantidadeAves,
     required double novoPesoMedio,
-    required double novaqtdRacaoInicial,
+    required double novaQtdRacaoInicial,
   }) {
     dataEntrada = novaDataEntrada;
     quantidadeAves = novaQuantidadeAves;
     pesoMedio = novoPesoMedio;
-    qtdRacaoInicial = novaqtdRacaoInicial;
+    qtdRacaoInicial = novaQtdRacaoInicial;
   }
 
   void gerarRelatorio() {
-    // TODO: logica para gerar relatório
+    // TODO: lógica para gerar relatório
   }
 
   void qtdAvesVazia() {
-    if (quantidadeAves <= 15000 && quantidadeAves < 80000) {
+    if (quantidadeAves < 15000 || quantidadeAves > 80000) {
       throw Exception('Quantidade de aves deve estar entre 15k e 80k');
     }
   }
@@ -82,9 +83,8 @@ class Lote {
   }
 
   void qtdRacaoInicialVazia() {
-    if (qtdRacaoInicial <= 0 ) {
+    if (qtdRacaoInicial <= 0) {
       throw Exception('Quantidade de ração inicial deve ser maior que zero');
     }
   }
-  
 }

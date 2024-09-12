@@ -7,26 +7,28 @@ class MockDAOLote implements IDAOLote {
   List<DTOLote> lotes = [];
 
   @override
-  DTOLote salvar(DTOLote dto) {
+  Future<DTOLote> salvar(DTOLote dto) async {
     dto.id ??= lotes.length + 1;
     lotes.add(dto);
     return dto;
   }
 
   @override
-  void deletar(dynamic id) {
+  Future<void> deletar(dynamic id) async {
     lotes.removeWhere((lote) => lote.id == id);
   }
 
   @override
-  DTOLote? buscarPorId(dynamic id) {
-    return lotes.firstWhere((lote) => lote.id == id, orElse: () {
-      throw Exception('Lote não encontrado');
-    });
+  Future<DTOLote?> buscarPorId(dynamic id) async {
+    try {
+      return lotes.firstWhere((lote) => lote.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
-  List<DTOLote> buscarTodos() {
+  Future<List<DTOLote>> buscarTodos() async {
     return lotes;
   }
 }
@@ -38,44 +40,48 @@ void main() {
     dao = MockDAOLote();
   });
 
-  test('Salvar lote', () {
+  test('Salvar lote', () async {
     final lote = Lote(
         dto: DTOLote(
             dataEntrada: DateTime.now(),
             quantidadeAves: 1000,
             pesoMedio: 2.5,
             qtdRacaoInicial: 200));
-    final dtoSalvo = lote.salvar(dao);
+    final dtoSalvo = await lote.salvar(dao);
 
     expect(dtoSalvo.id, isNotNull);
-    expect(dao.buscarTodos().length, 1);
+    expect((await dao.buscarTodos()).length, 1);
   });
 
-  test('Buscar lote por ID', () {
+  test('Buscar lote por ID', () async {
     final lote = Lote(
         dto: DTOLote(
             dataEntrada: DateTime.now(),
             quantidadeAves: 1200,
             pesoMedio: 2.7,
             qtdRacaoInicial: 250));
-    final dtoSalvo = lote.salvar(dao);
+    final dtoSalvo = await lote.salvar(dao);
 
-    final loteBuscado = Lote.buscarPorId(dao, dtoSalvo.id);
+    final loteBuscado = await Lote.buscarPorId(dao, dtoSalvo.id);
     expect(loteBuscado?.quantidadeAves, 1200);
   });
 
-  test('Deletar lote', () {
+  test('Deletar lote', () async {
     final lote = Lote(
         dto: DTOLote(
             dataEntrada: DateTime.now(),
             quantidadeAves: 800,
             pesoMedio: 2.3,
             qtdRacaoInicial: 150));
-    final dtoSalvo = lote.salvar(dao);
+    final dtoSalvo = await lote.salvar(dao);
 
     expect(dtoSalvo.id, isNotNull);
 
-    lote.deletar(dao);
+    await lote.deletar(dao);
+
+    // Verificar se o lote foi realmente deletado
+    final loteDeletado = await dao.buscarPorId(dtoSalvo.id);
+    expect(loteDeletado, isNull);
   });
 
   test('Validar quantidade de aves', () {

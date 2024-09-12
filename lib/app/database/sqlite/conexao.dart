@@ -18,6 +18,7 @@ class Conexao {
           createTables.forEach(db.execute);
           insertUsuarios.forEach(db.execute);
           insertPropriedades.forEach(db.execute);
+          insertLotes.forEach(db.execute);
         },
       );
       isInitialized = true;
