@@ -15,7 +15,6 @@ void main() async {
   });
 
   setUp(() async {
-    // Limpar dados anteriores
     final dao = DAOPropriedade();
     final propriedades = await dao.buscarPropriedade();
     for (var propriedade in propriedades) {

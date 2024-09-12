@@ -25,7 +25,6 @@ class MockDAOPropriedade implements IDAOPropriedade {
         (propriedade) => propriedade.id == id,
       );
     } catch (e) {
-      // Retorna null se não encontrado
       return null;
     }
   }

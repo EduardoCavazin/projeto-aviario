@@ -3,7 +3,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:projeto_avirario/app/database/sqlite/conexao.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_lote.dart';
 import 'package:projeto_avirario/app/database/sqlite/dao_lote.dart';
-import 'package:projeto_avirario/app/aplication/a_lote.dart'; // Ajuste o caminho conforme necessário
+import 'package:projeto_avirario/app/aplication/a_lote.dart'; 
 
 void main() async {
   late ALote aLote;

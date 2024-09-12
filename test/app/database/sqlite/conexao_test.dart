@@ -15,7 +15,7 @@ void main() {
     var tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
     for (var table in tables) {
       var tableName = table['name'] as String;
-      if (tableName != 'sqlite_sequence') { // 'sqlite_sequence' é usada para manter IDs autoincrementados, não remover
+      if (tableName != 'sqlite_sequence') { 
         await db.execute('DROP TABLE IF EXISTS $tableName');
       }
     }

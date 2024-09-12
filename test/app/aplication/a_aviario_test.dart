@@ -16,7 +16,6 @@ void main() async {
   });
 
   setUp(() async {
-    // Limpar dados anteriores
     dao = DAOAviario();
     final aviarios = await dao.buscarTodos();
     for (var aviario in aviarios) {

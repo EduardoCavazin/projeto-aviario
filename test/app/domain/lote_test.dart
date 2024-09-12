@@ -79,7 +79,6 @@ void main() {
 
     await lote.deletar(dao);
 
-    // Verificar se o lote foi realmente deletado
     final loteDeletado = await dao.buscarPorId(dtoSalvo.id);
     expect(loteDeletado, isNull);
   });

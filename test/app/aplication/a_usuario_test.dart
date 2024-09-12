@@ -15,7 +15,6 @@ void main() async {
   });
 
   setUp(() async {
-    // Limpar dados anteriores
     final dao = DAOUsuario();
     final usuarios = await dao.buscarUsuarios();
     for (var usuario in usuarios) {

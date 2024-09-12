@@ -41,13 +41,13 @@ class Aviario {
   }
 
   Future<void> atualizarDados({
-  required IDAOAviario dao, // Adicione o parâmetro dao aqui
+  required IDAOAviario dao,
   required String novoNome,
   required int novaCapacidade,
 }) async {
   nome = novoNome;
   capacidade = novaCapacidade;
-  await salvar(dao); // Agora dao é passado como parâmetro
+  await salvar(dao);
 }
 
   void gerarRelatorio() {
