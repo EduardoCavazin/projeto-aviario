@@ -65,7 +65,7 @@ class Lote {
 
   void validarQtdAves() {
     if (quantidadeAves < qtdMinAves || quantidadeAves > qtdMaxAves) {
-      throw Exception('Quantidade de aves deve estar entre 15k e 80k');
+      throw Exception('Quantidade de aves deve estar entre 18k e 80k');
     }
   }
 

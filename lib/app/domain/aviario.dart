@@ -1,3 +1,4 @@
+import 'package:projeto_avirario/app/domain/config/padroesAviarios.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_aviario.dart';
 import 'package:projeto_avirario/app/domain/interface/i_dao_aviario.dart';
 
@@ -61,8 +62,8 @@ class Aviario {
   }
 
   void capacidadeAviario() {
-    if (capacidade < 15000 || capacidade > 80000) {
-      throw Exception('Capacidade do aviário não pode ser menor que 15k ou maior que 80k');
+    if (capacidade < qtdMaxAves || capacidade > qtdMaxAves) {
+      throw Exception('Quantidade de aves deve estar entre 18k e 80k');
     }
   }
 }

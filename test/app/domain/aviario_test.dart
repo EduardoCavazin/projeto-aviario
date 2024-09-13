@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:projeto_avirario/app/aplication/a_aviario.dart';
+import 'package:projeto_avirario/app/domain/aviario.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_aviario.dart';
 import 'package:projeto_avirario/app/domain/interface/i_dao_aviario.dart';
 
@@ -59,8 +60,8 @@ void main() {
       );
       final dtoSalvo = await aviario.salvarAviario();
 
-      final aviarioBuscado = await AAviario.buscarAviarioPorId(dao, dtoSalvo.id);
-      expect(aviarioBuscado?.dto.nome, 'Aviário 2');
+      final aviarioBuscado = await dao.buscarPorId(dtoSalvo.id);
+      expect(aviarioBuscado?.nome, 'Aviário 2');
     });
 
     test('Deletar aviario', () async {
@@ -72,10 +73,38 @@ void main() {
 
       expect(dtoSalvo.id, isNotNull);
 
-      await aviario.deletarAviario();
+      await dao.deletar(dtoSalvo.id);
 
       final todosAviarios = await dao.buscarTodos();
       expect(todosAviarios.isEmpty, isTrue);
     });
+  });
+
+  group('Teste regras de negócio', (){
+
+    test('Nome do aviário não pode ser vazio', () {
+      expect(
+        () => Aviario(dto: DTOAviario(nome: '', capacidade: 2000)), 
+        throwsA(isA<Exception>().having(
+          (e) => e.toString(), 'message', contains('Nome do aviário não pode ser vazio')))
+        );
+    });
+
+    test('Capacidade do aviário não pode ser menor que 18000', () {
+      expect(
+        () => Aviario(dto: DTOAviario(nome: 'Aviário 4', capacidade: 15000)), 
+        throwsA(isA<Exception>().having(
+          (e) => e.toString(), 'message', contains('Quantidade de aves deve estar entre 18k e 80k')))
+        );
+    });
+
+    test('Capacidade do aviário não pode ser maior que 80000', () {
+      expect(
+        () => Aviario(dto: DTOAviario(nome: 'Aviário 5', capacidade: 81000)), 
+        throwsA(isA<Exception>().having(
+          (e) => e.toString(), 'message', contains('Quantidade de aves deve estar entre 18k e 80k')))
+        );
+    });
+
   });
 }

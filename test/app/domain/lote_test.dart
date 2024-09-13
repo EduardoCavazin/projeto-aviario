@@ -62,7 +62,7 @@ void main() {
             qtdRacaoInicial: 250));
     final dtoSalvo = await lote.salvar(dao);
 
-    final loteBuscado = await Lote.buscarPorId(dao, dtoSalvo.id);
+    final loteBuscado = await dao.buscarPorId(dtoSalvo.id);
     expect(loteBuscado?.quantidadeAves, 25000);
   });
 
@@ -102,7 +102,7 @@ void main() {
         () => Lote(
                 dto: DTOLote(
                     dataEntrada: DateTime.now(),
-                    quantidadeAves: 1000000,
+                    quantidadeAves: 10000,
                     pesoMedio: 2.5,
                     qtdRacaoInicial: 200))
             .validarQtdAves(),
