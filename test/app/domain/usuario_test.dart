@@ -40,6 +40,10 @@ void main() {
     dao = MockDAOUsuario();
   });
 
+  tearDown(() {
+    dao.usuarios.clear();
+  });
+
   test('Salvar usuario', () async {
     final usuario = Usuario(
         dto: DTOUsuario(

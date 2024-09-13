@@ -42,6 +42,10 @@ void main() {
     dao = MockDAOPropriedade();
   });
 
+  tearDown(() {
+    dao.propriedades.clear();
+  });
+
   test('Salvar propriedade', () async {
     final propriedade = Propriedade(
       dto: DTOPropriedade(
@@ -73,7 +77,7 @@ void main() {
   test('Deletar propriedade', () async {
     final propriedade = Propriedade(
       dto: DTOPropriedade(
-        nome: 'Fazenda 3',
+        nome: 'Fazenda 1',
         localizacao: 'Praia',
         qtdAviario: 2,
       ),
@@ -83,13 +87,13 @@ void main() {
     expect(dtoSalvo.id, isNotNull);
     expect((await dao.buscarPropriedade()).length, 1);
 
-    await propriedade.deletarPropriedade(dao);
+    await dao.deletarPropriedade(dtoSalvo.id);
     expect((await dao.buscarPropriedade()).length, 0);
   });
 
   test('Nome da propriedade vazio', () {
     expect(
-      () async => Propriedade(
+      () => Propriedade(
         dto: DTOPropriedade(nome: '', localizacao: 'Campo', qtdAviario: 3),
       ),
       throwsA(isA<Exception>().having((e) => e.toString(), 'message',
@@ -99,7 +103,7 @@ void main() {
 
   test('Localização da propriedade vazia', () {
     expect(
-      () async => Propriedade(
+      () => Propriedade(
         dto: DTOPropriedade(nome: 'Fazenda', localizacao: '', qtdAviario: 3),
       ),
       throwsA(isA<Exception>().having((e) => e.toString(), 'message',
@@ -109,12 +113,20 @@ void main() {
 
   test('Quantidade de aviários igual ou menor que zero', () {
     expect(
-      () async => Propriedade(
+      () => Propriedade(
         dto: DTOPropriedade(
-            nome: 'Fazenda', localizacao: 'Campo', qtdAviario: 0),
+          nome: 'Fazenda',
+          localizacao: 'Campo',
+          qtdAviario: 0,
+        ),
       ),
-      throwsA(isA<Exception>().having((e) => e.toString(), 'message',
-          contains('Quantidade de aviários não pode ser vazia'))),
+      throwsA(
+        isA<Exception>().having(
+          (e) => e.toString(),
+          'message',
+          contains('A quantidade de aviários deve ser maior que zero'),
+        ),
+      ),
     );
   });
 }
