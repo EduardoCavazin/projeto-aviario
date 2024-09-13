@@ -18,12 +18,13 @@ class Usuario {
         senha = dto.senha,
         propriedades = propriedades ?? <Propriedade>[] {
     nomeVazio();
-    emailVazio();
-    senhaVazia();
+    emailValido();
+    senhaValida();
   }
 
   Future<DTOUsuario> salvar(IDAOUsuario dao) async {
-    return await dao.salvar(DTOUsuario(id: id, nome: nome, email: email, senha: senha));
+    return await dao
+        .salvar(DTOUsuario(id: id, nome: nome, email: email, senha: senha));
   }
 
   Future<void> deletar(IDAOUsuario dao) async {
@@ -79,15 +80,22 @@ class Usuario {
     }
   }
 
-  void emailVazio() {
+  void emailValido() {
     if (email.isEmpty) {
       throw Exception('Email não pode ser vazio');
+    } else if (!email.contains('@')) {
+      throw Exception('Email inválido');
     }
   }
 
-  void senhaVazia() {
+  void senhaValida() {
     if (senha.isEmpty) {
       throw Exception('Senha não pode ser vazia');
+    } else if (senha.length < 6) {
+      throw Exception('Senha deve ter no mínimo 6 caracteres');
+    } else if (!senha.contains(RegExp(r'[a-zA-Z]')) ||
+        !senha.contains(RegExp(r'[0-9]'))) {
+      throw Exception('Senha deve conter pelo menos um caractere e um número');
     }
   }
 }

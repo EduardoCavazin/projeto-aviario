@@ -43,7 +43,7 @@ void main() {
   test('Salvar usuario', () async {
     final usuario = Usuario(
         dto: DTOUsuario(
-            nome: 'João', email: 'joao@example.com', senha: '123456'));
+            nome: 'João', email: 'joao@example.com', senha: '123456d'));
     final dtoSalvo = await usuario.salvar(dao);
 
     expect(dtoSalvo.id, isNotNull);
@@ -53,7 +53,7 @@ void main() {
   test('Buscar usuario por ID', () async {
     final usuario = Usuario(
         dto: DTOUsuario(
-            nome: 'Maria', email: 'maria@example.com', senha: 'abcdef'));
+            nome: 'Maria', email: 'maria@example.com', senha: '1abcdef'));
     final dtoSalvo = await usuario.salvar(dao);
 
     final usuarioBuscado = await dao.buscarPorId(dtoSalvo.id);
@@ -75,8 +75,8 @@ void main() {
   test('Nome vazio deve lançar exceção', () {
     expect(
       () => Usuario(
-          dto:
-              DTOUsuario(nome: '', email: 'joao@example.com', senha: '123456')),
+          dto: DTOUsuario(
+              nome: '', email: 'joao@example.com', senha: '123456d')),
       throwsA(isA<Exception>().having(
           (e) => e.toString(), 'message', contains('Nome não pode ser vazio'))),
     );
@@ -84,7 +84,7 @@ void main() {
 
   test('Email vazio deve lançar exceção', () {
     expect(
-      () => Usuario(dto: DTOUsuario(nome: 'João', email: '', senha: '123456')),
+      () => Usuario(dto: DTOUsuario(nome: 'João', email: '', senha: '123456d')),
       throwsA(isA<Exception>().having((e) => e.toString(), 'message',
           contains('Email não pode ser vazio'))),
     );
@@ -97,5 +97,44 @@ void main() {
       throwsA(isA<Exception>().having((e) => e.toString(), 'message',
           contains('Senha não pode ser vazia'))),
     );
+  });
+
+  test('Email inválido deve lançar exceção', () {
+    expect(
+      () => Usuario(
+          dto: DTOUsuario(
+              nome: 'João', email: 'joaoexample.com', senha: '123456')),
+      throwsA(isA<Exception>()
+          .having((e) => e.toString(), 'message', contains('Email inválido'))),
+    );
+  });
+
+  group('Testes Senhas inválidas', () {
+    test('Senha menor que 6 caracteres deve lançar exceção', () {
+      expect(
+        () => Usuario(
+            dto: DTOUsuario(nome: 'João', email: 'joao@joao', senha: '12345')),
+        throwsA(isA<Exception>().having((e) => e.toString(), 'message',
+            contains('Senha deve ter no mínimo 6 caracteres'))),
+      );
+    });
+
+    test('Senha sem um número deve lançar exceção', () {
+      expect(
+        () => Usuario(
+            dto: DTOUsuario(nome: 'João', email: 'joao@joao', senha: 'abcdef')),
+        throwsA(isA<Exception>().having((e) => e.toString(), 'message',
+            contains('Senha deve conter pelo menos um caractere e um número'))),
+      );
+    });
+
+    test('Senha sem um caractere deve lançar exceção', () {
+      expect(
+        () => Usuario(
+            dto: DTOUsuario(nome: 'João', email: 'joao@joao', senha: '123456')),
+        throwsA(isA<Exception>().having((e) => e.toString(), 'message',
+            contains('Senha deve conter pelo menos um caractere e um número'))),
+      );
+    });
   });
 }
