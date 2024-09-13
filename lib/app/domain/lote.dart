@@ -1,5 +1,6 @@
 import 'package:projeto_avirario/app/domain/dto/dto_lote.dart';
 import 'package:projeto_avirario/app/domain/interface/i_dao_lote.dart';
+import 'package:projeto_avirario/app/domain/config/padroesAviarios.dart';
 
 class Lote {
   dynamic id;
@@ -14,7 +15,11 @@ class Lote {
         dataEntrada = dto.dataEntrada,
         quantidadeAves = dto.quantidadeAves,
         pesoMedio = dto.pesoMedio,
-        qtdRacaoInicial = dto.qtdRacaoInicial;
+        qtdRacaoInicial = dto.qtdRacaoInicial{
+    validarQtdAves();
+    validarPesoMedio();
+    validarQtdRacao();
+    }
 
   Future<DTOLote> salvar(IDAOLote dao) async {
     return await dao.salvar(DTOLote(
@@ -54,35 +59,23 @@ class Lote {
     qtdRacaoInicial += novaQuantidadeRacao;
   }
 
-  void atualizarDados({
-    required DateTime novaDataEntrada,
-    required int novaQuantidadeAves,
-    required double novoPesoMedio,
-    required double novaQtdRacaoInicial,
-  }) {
-    dataEntrada = novaDataEntrada;
-    quantidadeAves = novaQuantidadeAves;
-    pesoMedio = novoPesoMedio;
-    qtdRacaoInicial = novaQtdRacaoInicial;
-  }
-
   void gerarRelatorio() {
     // TODO: lógica para gerar relatório
   }
 
-  void qtdAvesVazia() {
-    if (quantidadeAves < 15000 || quantidadeAves > 80000) {
+  void validarQtdAves() {
+    if (quantidadeAves < qtdMinAves || quantidadeAves > qtdMaxAves) {
       throw Exception('Quantidade de aves deve estar entre 15k e 80k');
     }
   }
 
-  void pesoMedioVazio() {
+  void validarPesoMedio() {
     if (pesoMedio <= 0) {
       throw Exception('Peso médio deve ser maior que zero');
     }
   }
 
-  void qtdRacaoInicialVazia() {
+  void validarQtdRacao() {
     if (qtdRacaoInicial <= 0) {
       throw Exception('Quantidade de ração inicial deve ser maior que zero');
     }

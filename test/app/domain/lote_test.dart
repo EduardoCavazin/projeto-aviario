@@ -44,7 +44,7 @@ void main() {
     final lote = Lote(
         dto: DTOLote(
             dataEntrada: DateTime.now(),
-            quantidadeAves: 1000,
+            quantidadeAves: 20000,
             pesoMedio: 2.5,
             qtdRacaoInicial: 200));
     final dtoSalvo = await lote.salvar(dao);
@@ -57,41 +57,55 @@ void main() {
     final lote = Lote(
         dto: DTOLote(
             dataEntrada: DateTime.now(),
-            quantidadeAves: 1200,
+            quantidadeAves: 25000,
             pesoMedio: 2.7,
             qtdRacaoInicial: 250));
     final dtoSalvo = await lote.salvar(dao);
 
     final loteBuscado = await Lote.buscarPorId(dao, dtoSalvo.id);
-    expect(loteBuscado?.quantidadeAves, 1200);
+    expect(loteBuscado?.quantidadeAves, 25000);
   });
 
   test('Deletar lote', () async {
     final lote = Lote(
-        dto: DTOLote(
-            dataEntrada: DateTime.now(),
-            quantidadeAves: 800,
-            pesoMedio: 2.3,
-            qtdRacaoInicial: 150));
+      dto: DTOLote(
+        dataEntrada: DateTime.now(),
+        quantidadeAves: 18000,
+        pesoMedio: 2.3,
+        qtdRacaoInicial: 150,
+      ),
+    );
+
     final dtoSalvo = await lote.salvar(dao);
 
     expect(dtoSalvo.id, isNotNull);
+    expect((await dao.buscarTodos()).length, 1);
 
-    await lote.deletar(dao);
-
-    final loteDeletado = await dao.buscarPorId(dtoSalvo.id);
-    expect(loteDeletado, isNull);
+    await dao.deletar(dtoSalvo.id); // Passando o DAO ao método deletar
+    expect((await dao.buscarTodos()).length, 0);
   });
 
-  test('Validar quantidade de aves', () {
+  test('Validar quantidade minima de aves', () {
     expect(
         () => Lote(
                 dto: DTOLote(
                     dataEntrada: DateTime.now(),
-                    quantidadeAves: 10000,
+                    quantidadeAves: 1000,
                     pesoMedio: 2.5,
                     qtdRacaoInicial: 200))
-            .qtdAvesVazia(),
+            .validarQtdAves(),
+        throwsException);
+  });
+
+  test('Validar quantidade maxima de aves', () {
+    expect(
+        () => Lote(
+                dto: DTOLote(
+                    dataEntrada: DateTime.now(),
+                    quantidadeAves: 1000000,
+                    pesoMedio: 2.5,
+                    qtdRacaoInicial: 200))
+            .validarQtdAves(),
         throwsException);
   });
 
@@ -103,7 +117,7 @@ void main() {
                     quantidadeAves: 15000,
                     pesoMedio: 0,
                     qtdRacaoInicial: 200))
-            .pesoMedioVazio(),
+            .validarPesoMedio(),
         throwsException);
   });
 
@@ -115,7 +129,7 @@ void main() {
                     quantidadeAves: 15000,
                     pesoMedio: 2.5,
                     qtdRacaoInicial: 0))
-            .qtdRacaoInicialVazia(),
+            .validarQtdRacao(),
         throwsException);
   });
 }
