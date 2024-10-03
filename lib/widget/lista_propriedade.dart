@@ -5,9 +5,9 @@ class ListaPropriedade extends StatelessWidget {
   
   Future<List<DTOPropriedade>> consultar() async {
     return[
-      DTOPropriedade(nome: 'Estancia 1', localizacao: 'Pvai', qtdAviario: 15),
-      DTOPropriedade(nome: 'Estancia 2', localizacao: 'NAI', qtdAviario: 4),
-      DTOPropriedade(nome: 'Estancia 3', localizacao: 'PSO', qtdAviario: 6),
+      DTOPropriedade(nome: 'Estancia 1', localizacao: 'Paranavaí', qtdAviario: 15),
+      DTOPropriedade(nome: 'Estancia 2', localizacao: 'Nova Alinaça do Ivaí', qtdAviario: 4),
+      DTOPropriedade(nome: 'Estancia 3', localizacao: 'Paraíso do Norte', qtdAviario: 6),
     ];
   }
 
@@ -41,7 +41,7 @@ class ListaPropriedade extends StatelessWidget {
               itemBuilder: (context, index) {
                 var propriedade = dados[index];
                 return ListTile(
-                  leading: Icon(Icons.home),
+                  leading: Icon(Icons.agriculture),
                   title: Text(propriedade.nome),
                   subtitle: Text('Localização: ${propriedade.localizacao}'),
                   trailing: Text('Aviários: ${propriedade.qtdAviario}'),
