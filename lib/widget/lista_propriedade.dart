@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_avirario/app/database/supabase/dao_propriedade_supabase.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
+import 'package:projeto_avirario/widget/cadastro_propriedade.dart'; 
 
 class ListaPropriedade extends StatelessWidget {
-  
-  Future<List<DTOPropriedade>> consultar() async {
-    return[
-      DTOPropriedade(nome: 'Estancia 1', localizacao: 'Paranavaí', qtdAviario: 15),
-      DTOPropriedade(nome: 'Estancia 2', localizacao: 'Nova Alinaça do Ivaí', qtdAviario: 4),
-      DTOPropriedade(nome: 'Estancia 3', localizacao: 'Paraíso do Norte', qtdAviario: 6),
-    ];
-  }
+  final DAOPropriedadeSupabase daoPropriedade = DAOPropriedadeSupabase();
 
-  Widget createButton(BuildContext context, String route, String text) {
-    return TextButton(
-      onPressed: () => Navigator.pushNamed(context, route),
-      child: Text(text),
-    );
+  Future<List<DTOPropriedade>> consultar() async {
+    return await daoPropriedade.buscarPropriedade();
   }
 
   @override
@@ -23,19 +15,29 @@ class ListaPropriedade extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista de Propriedades'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_home_work),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CadastroPropriedade()),
+              );
+            },
+          )
+        ],
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<DTOPropriedade>>(
         future: consultar(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          var dados = snapshot.data;
-
+        builder: (BuildContext context, AsyncSnapshot<List<DTOPropriedade>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator()); // Indicador de carregamento
+            return Center(child: CircularProgressIndicator());
           }
 
-          if (!snapshot.hasData || dados == null || dados.isEmpty) {
-            return Center(child: Text('Nenhum dado encontrado'));
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('Nenhuma propriedade encontrada.'));
           } else {
+            var dados = snapshot.data!;
             return ListView.builder(
               itemCount: dados.length,
               itemBuilder: (context, index) {

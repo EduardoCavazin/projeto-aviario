@@ -1,4 +1,3 @@
-import 'package:postgrest/src/types.dart';
 import 'package:projeto_avirario/app/database/supabase/conexao_supabase.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
 
@@ -53,7 +52,7 @@ Future<void> deletarPropriedade(dynamic id) async {
       .eq('id', id);
 
   if (response.hasError) {
-    throw Exception('Erro ao deletar a propriedade: ${response.error?.message}');
+    throw Exception('Erro ao deletar a propriedade');
       }
     }
     
@@ -64,11 +63,11 @@ Future<void> deletarPropriedade(dynamic id) async {
           .eq('id', id)
           .single(); 
     
-      if (response.error != null) {
-        throw Exception('Erro ao buscar a propriedade: ${response.error?.message}');
+      if (response.isEmpty) {
+        throw Exception('Erro ao buscar a propriedade');
       }
     
-      final data = response.data as Map<String, dynamic>?;
+      final data = response.entries as Map<String, dynamic>?;
       if (data == null) {
         return null;
       }
@@ -83,38 +82,24 @@ Future<void> deletarPropriedade(dynamic id) async {
     }
     
     Future<List<DTOPropriedade>> buscarPropriedade() async {
-      final response = await supabase.from('propriedade').select();
-    
-      if (response.error != null) {
-        throw Exception('Erro ao buscar propriedades: ${response.error?.message}');
-      }
-    
-      final data = response.data as List<dynamic>?;
-      if (data == null) {
-        return [];
-      }
-    
-      return data.map((item) {
-        final map = item as Map<String, dynamic>;
-        return DTOPropriedade(
-          id: map['id'] as int,
-          nome: map['nome'] as String,
-          localizacao: map['localizacao'] as String,
-          qtdAviario: map['qtdAviario'] as int,
-          aviarios: [], 
-        );
-      }).toList();
+    final response = await supabase
+        .from('propriedade')
+        .select();
+      
+    if (response.isEmpty) {
+      throw Exception('Erro ao buscar propriedades');
     }
+
+    final data = response as List<dynamic>;
+    return data.map((item) {
+      final map = item as Map<String, dynamic>;
+      return DTOPropriedade(
+        id: map['id'] as int,
+        nome: map['nome'] as String,
+        localizacao: map['localizacao'] as String,
+        qtdAviario: map['qtdAviario'] as int,
+      );
+    }).toList();
+  }
 }
 
-extension on PostgrestList {
-  get error => null;
-  
-  get data => null;
-}
-
-extension on PostgrestMap {
-  get error => null;
-  
-  get data => null;
-}

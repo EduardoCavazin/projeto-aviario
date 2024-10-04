@@ -44,6 +44,14 @@ class Usuario {
     return dtos.map((dto) => Usuario(dto: dto)).toList();
   }
 
+  static Future<Usuario?> buscarPorEmail(IDAOUsuario dao, String email) async {
+    final dto = await dao.buscarPorEmail(email);
+    if (dto != null) {
+      return Usuario(dto: dto);
+    }
+    return null;
+  }
+
   void addPropriedade(Propriedade propriedade) {
     propriedades.add(propriedade);
   }
