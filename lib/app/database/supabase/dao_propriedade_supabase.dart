@@ -1,9 +1,12 @@
+import 'package:postgrest/src/types.dart';
 import 'package:projeto_avirario/app/database/supabase/conexao_supabase.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
+import 'package:projeto_avirario/app/domain/interface/i_dao_propriedade.dart'; 
 
-class DAOPropriedadeSupabase {
+class DAOPropriedadeSupabase implements IDAOPropriedade {
   final supabase = DatabaseConnection().client;
 
+  @override
   Future<DTOPropriedade> salvar(DTOPropriedade dto) async {
     if (dto.id == null) {
       final response = await supabase
@@ -13,7 +16,7 @@ class DAOPropriedadeSupabase {
             'localizacao': dto.localizacao,
             'qtdAviario': dto.qtdAviario,
           })
-          .select(); 
+          .select();
 
       if (response.isNotEmpty) {
         final data = response[0];
@@ -45,47 +48,48 @@ class DAOPropriedadeSupabase {
       }
     }
   }
-Future<void> deletarPropriedade(dynamic id) async {
-  final response = await supabase
-      .from('propriedade')
-      .delete()
-      .eq('id', id);
 
-  if (response.hasError) {
+  @override
+  Future<void> deletarPropriedade(dynamic id) async {
+  final response = await supabase.from('propriedade').delete().eq('id', id).select();
+
+  if (response.error != null) {
     throw Exception('Erro ao deletar a propriedade');
-      }
+  }
+}
+
+  @override
+  Future<DTOPropriedade?> buscarPorId(dynamic id) async {
+    final response = await supabase
+        .from('propriedade')
+        .select()
+        .eq('id', id)
+        .single();
+
+    if (response.isEmpty) {
+      throw Exception('Erro ao buscar a propriedade');
     }
-    
-    Future<DTOPropriedade?> buscarPorId(dynamic id) async {
-      final response = await supabase
-          .from('propriedade')
-          .select()
-          .eq('id', id)
-          .single(); 
-    
-      if (response.isEmpty) {
-        throw Exception('Erro ao buscar a propriedade');
-      }
-    
-      final data = response.entries as Map<String, dynamic>?;
-      if (data == null) {
-        return null;
-      }
-    
-      return DTOPropriedade(
-        id: data['id'] as int,
-        nome: data['nome'] as String,
-        localizacao: data['localizacao'] as String,
-        qtdAviario: data['qtdAviario'] as int,
-        aviarios: [],
-      );
+
+    final data = response.entries as Map<String, dynamic>?;
+    if (data == null) {
+      return null;
     }
-    
-    Future<List<DTOPropriedade>> buscarPropriedade() async {
+
+    return DTOPropriedade(
+      id: data['id'] as int,
+      nome: data['nome'] as String,
+      localizacao: data['localizacao'] as String,
+      qtdAviario: data['qtdAviario'] as int,
+      aviarios: [],
+    );
+  }
+
+  @override
+  Future<List<DTOPropriedade>> buscarPropriedade() async {
     final response = await supabase
         .from('propriedade')
         .select();
-      
+
     if (response.isEmpty) {
       throw Exception('Erro ao buscar propriedades');
     }
@@ -103,3 +107,6 @@ Future<void> deletarPropriedade(dynamic id) async {
   }
 }
 
+extension on PostgrestList {
+  get error => null;
+}

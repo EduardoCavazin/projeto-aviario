@@ -20,7 +20,13 @@ class Propriedade {
     validarQtdAviarios();
   }
 
-  get propriedade => null;
+  DTOPropriedade get dto => DTOPropriedade(
+    id: id,
+    nome: nome,
+    localizacao: localizacao,
+    qtdAviario: qtdAviario,
+    aviarios: aviarios,
+  );
 
   Future<DTOPropriedade> salvar(IDAOPropriedade dao) async {
     return await dao.salvar(DTOPropriedade(
@@ -36,8 +42,7 @@ class Propriedade {
     await dao.deletarPropriedade(id);
   }
 
-  static Future<Propriedade?> buscarPorId(
-      IDAOPropriedade dao, dynamic id) async {
+  static Future<Propriedade?> buscarPorId(IDAOPropriedade dao, dynamic id) async {
     final dto = await dao.buscarPorId(id);
     if (dto != null) {
       return Propriedade(dto: dto);
@@ -45,8 +50,7 @@ class Propriedade {
     return null;
   }
 
-  static Future<List<Propriedade>> buscarPropriedade(
-      IDAOPropriedade dao) async {
+  static Future<List<Propriedade>> buscarPropriedade(IDAOPropriedade dao) async {
     final dtos = await dao.buscarPropriedade();
     return dtos.map((dto) => Propriedade(dto: dto)).toList();
   }

@@ -4,20 +4,27 @@ import 'package:projeto_avirario/app/domain/propriedade.dart';
 import 'package:projeto_avirario/app/database/supabase/dao_propriedade_supabase.dart';
 
 class APropriedade {
-  late Propriedade propriedade;
+  Propriedade? propriedade;
   IDAOPropriedade dao;
 
   APropriedade({required DTOPropriedade dto, IDAOPropriedade? dao})
-      : dao = (dao ?? DAOPropriedadeSupabase()) as IDAOPropriedade {
+      : dao = dao ?? DAOPropriedadeSupabase() {
     propriedade = Propriedade(dto: dto);
   }
 
+  APropriedade.withoutDTO({IDAOPropriedade? dao})
+      : dao = dao ?? DAOPropriedadeSupabase() {
+    propriedade = null;
+  }
+
   Future<DTOPropriedade> salvar() async {
-    return await propriedade.salvar(dao);
+    if (propriedade == null) throw Exception("Propriedade não definida.");
+    return await propriedade!.salvar(dao);
   }
 
   Future<void> deletar() async {
-    await propriedade.deletarPropriedade(dao);
+    if (propriedade == null) throw Exception("Propriedade não definida.");
+    await propriedade!.deletarPropriedade(dao);
   }
 
   Future<Propriedade?> buscarPorId(dynamic id) async {

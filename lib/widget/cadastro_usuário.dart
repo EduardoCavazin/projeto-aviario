@@ -3,6 +3,7 @@ import 'package:projeto_avirario/app/aplication/a_usuario.dart';
 import 'package:projeto_avirario/app/aplication/a_propriedade.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_usuario.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
+import 'package:projeto_avirario/widget/routes.dart';
 
 class CadastroUsuario extends StatefulWidget {
   @override
@@ -20,38 +21,31 @@ class _CadastroUsuario extends State<CadastroUsuario> {
 
   Future<void> _registerUser() async {
     if (_formKey.currentState!.validate()) {
-      // Criando DTO para o usuário
       final usuarioDTO = DTOUsuario(
         nome: nomeController.text,
         email: emailController.text,
         senha: senhaController.text,
       );
 
-      // Criando a instância AUsuario para manipular o usuário
       final usuarioApp = AUsuario(dto: usuarioDTO);
 
-      // Criando DTO para a propriedade
       final propriedadeDTO = DTOPropriedade(
         nome: nomePropriedadeController.text,
         localizacao: localizacaoPropriedadeController.text,
         qtdAviario: int.parse(qtdAviarioController.text),
       );
 
-      // Criando a instância APropriedade para manipular a propriedade
       final propriedadeApp = APropriedade(dto: propriedadeDTO);
 
       try {
-        // Salvando usuário usando AUsuario
         await usuarioApp.salvar();
-
-        // Salvando propriedade usando APropriedade
         await propriedadeApp.salvar();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Usuário e propriedade cadastrados com sucesso!')),
         );
 
-        Navigator.pop(context);
+        Navigator.pushNamed(context, Routes.listaPropriedade);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erro ao cadastrar: $e')),
@@ -109,7 +103,6 @@ class _CadastroUsuario extends State<CadastroUsuario> {
                 },
               ),
               SizedBox(height: 20),
-              // Campos de registro da propriedade
               TextFormField(
                 controller: nomePropriedadeController,
                 decoration: InputDecoration(labelText: 'Nome da Propriedade'),
