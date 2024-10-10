@@ -36,7 +36,7 @@ void main() async {
     final salvoDto = await aLote.salvarLote();
     expect(salvoDto.id, isNotNull);
 
-    final buscado = await ALote.buscarLotePorId(dao, salvoDto.id);
+    final buscado = await aLote.buscarLotePorId(salvoDto.id);
     expect(buscado, isNotNull);
     expect(buscado!.dto.quantidadeAves, 1200);
     expect(buscado.dto.pesoMedio, 2.7);
@@ -55,7 +55,7 @@ void main() async {
     final salvoDto = await aLote.salvarLote();
     await aLote.deletarLote();
 
-    final buscado = await ALote.buscarLotePorId(dao, salvoDto.id);
+    final buscado = await aLote.buscarLotePorId(salvoDto.id);
     expect(buscado, isNull);
   });
 
@@ -77,7 +77,7 @@ void main() async {
     aLote = ALote(dao: dao, dto: dto2);
     await aLote.salvarLote();
 
-    final lotes = await ALote.buscarTodosLotes(dao);
+    final lotes = await aLote.buscarTodosLotes();
     expect(lotes.length, 2);
     expect(lotes.any((lote) => lote.dto.quantidadeAves == 1000), true);
     expect(lotes.any((lote) => lote.dto.quantidadeAves == 1500), true);

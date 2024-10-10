@@ -20,6 +20,8 @@ class Propriedade {
     validarQtdAviarios();
   }
 
+  get propriedade => null;
+
   Future<DTOPropriedade> salvar(IDAOPropriedade dao) async {
     return await dao.salvar(DTOPropriedade(
       id: id,
@@ -81,7 +83,6 @@ class Propriedade {
     return List.unmodifiable(aviarios);
   }
 
-  // Validações privadas
   void validarNome() {
     if (nome.trim().isEmpty) {
       throw Exception('Nome da propriedade não pode ser vazio');

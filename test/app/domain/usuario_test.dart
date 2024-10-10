@@ -31,6 +31,12 @@ class MockDAOUsuario implements IDAOUsuario {
   Future<List<DTOUsuario>> buscarUsuarios() async {
     return usuarios;
   }
+  
+  @override
+  Future<DTOUsuario?> buscarPorEmail(String email) {
+    // TODO: implement buscarPorEmail
+    throw UnimplementedError();
+  }
 }
 
 void main() {

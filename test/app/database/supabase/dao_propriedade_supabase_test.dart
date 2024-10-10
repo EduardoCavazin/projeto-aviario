@@ -11,12 +11,11 @@ class MockPostgrestFilterBuilder extends Mock implements PostgrestFilterBuilder 
 void main() {
   late MockSupabaseClient mockSupabaseClient;
   late MockPostgrestFilterBuilder mockQueryBuilder;
-  late PropriedadeSupabaseDAO dao;
+  late DAOPropriedadeSupabase dao;
 
   setUp(() {
     mockSupabaseClient = MockSupabaseClient();
     mockQueryBuilder = MockPostgrestFilterBuilder();
-    dao = PropriedadeSupabaseDAO(client: mockSupabaseClient); 
   });
 
   group('PropriedadeSupabaseDAO', () {

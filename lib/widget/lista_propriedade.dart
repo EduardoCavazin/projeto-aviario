@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_avirario/app/database/supabase/dao_propriedade_supabase.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
-import 'package:projeto_avirario/widget/cadastro_propriedade.dart'; 
+import 'package:projeto_avirario/app/aplication/a_propriedade.dart';
+import 'package:projeto_avirario/app/domain/propriedade.dart';
+import 'package:projeto_avirario/widget/cadastro_propriedade.dart';
 
 class ListaPropriedade extends StatelessWidget {
-  final DAOPropriedadeSupabase daoPropriedade = DAOPropriedadeSupabase();
-
   Future<List<DTOPropriedade>> consultar() async {
-    return await daoPropriedade.buscarPropriedade();
+    APropriedade aPropriedade = APropriedade(dto: DTOPropriedade(nome: '', localizacao: '', qtdAviario: 0));
+    List<Propriedade> propriedadesApp = await aPropriedade.buscarPropriedades();
+    List<DTOPropriedade> dtoPropriedades = propriedadesApp.map((propriedade) {
+      return DTOPropriedade(
+        nome: propriedade.nome,
+        localizacao: propriedade.localizacao,
+        qtdAviario: propriedade.qtdAviario,
+      );
+    }).toList();
+
+    return dtoPropriedades;
   }
 
   @override

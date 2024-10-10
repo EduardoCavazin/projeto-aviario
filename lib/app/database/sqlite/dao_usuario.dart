@@ -88,4 +88,26 @@ class DAOUsuario implements IDAOUsuario {
       );
     });
   }
+  
+  @override
+  Future<DTOUsuario?> buscarPorEmail(String email) async {
+  await _openDatabase();
+  final List<Map<String, dynamic>> maps = await _db.query(
+    'usuario',
+    where: 'email = ?',
+    whereArgs: [email],
+  );
+  
+  if (maps.isNotEmpty) {
+    final map = maps.first;
+    return DTOUsuario(
+      id: map['id'],
+      nome: map['nome'],
+      email: map['email'],
+      senha: map['senha'],
+    );
+  }
+  
+  return null;
+}
 }

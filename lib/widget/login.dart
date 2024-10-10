@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_avirario/app/database/supabase/dao_usuario_supabase.dart';
 import 'package:projeto_avirario/widget/routes.dart';
-import 'package:projeto_avirario/app/domain/dto/dto_usuario.dart';
+import 'package:projeto_avirario/app/aplication/a_usuario.dart';
 
 class LoginScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final DAOUsuarioSupabase daoUsuario = DAOUsuarioSupabase();
 
   Future<void> _login(BuildContext context) async {
   if (_formKey.currentState!.validate()) {
@@ -15,9 +13,7 @@ class LoginScreen extends StatelessWidget {
     final senha = passwordController.text;
 
     try {
-      DTOUsuario? usuario = await daoUsuario.buscarPorEmail(email);
-
-      print('Senha do banco: ${usuario?.senha}, Senha inserida: $senha');
+      final usuario = await AUsuario.buscarPorEmail(email);
 
       if (usuario != null && usuario.senha == senha) {
         Navigator.pushNamed(context, Routes.listaPropriedade);
@@ -84,8 +80,7 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(
-                      context, Routes.cadastroUsuario);
+                  Navigator.pushNamed(context, Routes.cadastroUsuario);
                 },
                 child: Text('Não tem uma conta? Registre-se aqui!'),
               ),

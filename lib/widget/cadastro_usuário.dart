@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_avirario/app/database/supabase/dao_usuario_supabase.dart';
-import 'package:projeto_avirario/app/database/supabase/dao_propriedade_supabase.dart';
+import 'package:projeto_avirario/app/aplication/a_usuario.dart';
+import 'package:projeto_avirario/app/aplication/a_propriedade.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_usuario.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
 
@@ -17,28 +17,35 @@ class _CadastroUsuario extends State<CadastroUsuario> {
   final nomePropriedadeController = TextEditingController();
   final localizacaoPropriedadeController = TextEditingController();
   final qtdAviarioController = TextEditingController();
-  
-  final DAOUsuarioSupabase daoUsuario = DAOUsuarioSupabase(); 
-  final DAOPropriedadeSupabase daoPropriedade = DAOPropriedadeSupabase(); 
 
   Future<void> _registerUser() async {
     if (_formKey.currentState!.validate()) {
-      final usuario = DTOUsuario(
+      // Criando DTO para o usuário
+      final usuarioDTO = DTOUsuario(
         nome: nomeController.text,
         email: emailController.text,
         senha: senhaController.text,
       );
 
+      // Criando a instância AUsuario para manipular o usuário
+      final usuarioApp = AUsuario(dto: usuarioDTO);
+
+      // Criando DTO para a propriedade
+      final propriedadeDTO = DTOPropriedade(
+        nome: nomePropriedadeController.text,
+        localizacao: localizacaoPropriedadeController.text,
+        qtdAviario: int.parse(qtdAviarioController.text),
+      );
+
+      // Criando a instância APropriedade para manipular a propriedade
+      final propriedadeApp = APropriedade(dto: propriedadeDTO);
+
       try {
-        final savedUser = await daoUsuario.salvar(usuario);
+        // Salvando usuário usando AUsuario
+        await usuarioApp.salvar();
 
-        final propriedade = DTOPropriedade(
-          nome: nomePropriedadeController.text,
-          localizacao: localizacaoPropriedadeController.text,
-          qtdAviario: int.parse(qtdAviarioController.text),
-        );
-
-        await daoPropriedade.salvar(propriedade);
+        // Salvando propriedade usando APropriedade
+        await propriedadeApp.salvar();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Usuário e propriedade cadastrados com sucesso!')),

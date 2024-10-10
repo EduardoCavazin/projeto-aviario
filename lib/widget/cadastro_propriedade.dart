@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_avirario/app/database/supabase/dao_propriedade_supabase.dart';
+import 'package:projeto_avirario/app/aplication/a_propriedade.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
 
 class CadastroPropriedade extends StatefulWidget {
@@ -12,7 +12,6 @@ class _CadastroPropriedadeState extends State<CadastroPropriedade> {
   final nomeController = TextEditingController();
   final localizacaoController = TextEditingController();
   final qtdAviarioController = TextEditingController();
-  final DAOPropriedadeSupabase daoPropriedade = DAOPropriedadeSupabase(); 
 
   @override
   Widget build(BuildContext context) {
@@ -60,15 +59,17 @@ class _CadastroPropriedadeState extends State<CadastroPropriedade> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     // Cria o DTO de propriedade
-                    final propriedade = DTOPropriedade(
+                    final propriedadeDTO = DTOPropriedade(
                       nome: nomeController.text,
                       localizacao: localizacaoController.text,
                       qtdAviario: int.parse(qtdAviarioController.text),
                     );
 
-                    // Salva no Supabase utilizando o DAO
+                    // Cria a instância de APropriedade e salva no banco de dados
+                    final propriedadeApp = APropriedade(dto: propriedadeDTO);
+                    
                     try {
-                      await daoPropriedade.salvar(propriedade);
+                      await propriedadeApp.salvar();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Propriedade cadastrada com sucesso!')),
                       );
