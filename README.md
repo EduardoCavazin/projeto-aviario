@@ -10,7 +10,7 @@ O Projeto Aviário é uma aplicação desenvolvida em Dart e Flutter, focada na 
 - **Flutter**: Framework para desenvolvimento de aplicativos.
 - **Firebase**: Backend como serviço, usado para persistência de dados e autenticação.
   - **Firebase Firestore**: Banco de dados NoSQL para armazenamento de dados da aplicação.
-  - **Firebase Auth** (opcional): Autenticação de usuários para controle de acesso.
+  - **Firebase Auth**: Autenticação de usuários para controle de acesso.
 - **cloud_firestore**: Biblioteca para integração com o Firestore.
 
 ## Configuração do Ambiente

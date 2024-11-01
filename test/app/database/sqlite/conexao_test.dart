@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:projeto_avirario/app/database/script.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:projeto_avirario/app/database/sqlite/conexao.dart';
+import 'package:projeto_avirario/app/database/firebase/conexao.dart';
 
 void main() {
   late Database db;

@@ -1,36 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_usuario.dart';
 import 'package:projeto_avirario/app/domain/interface/i_dao_usuario.dart';
 
 class DAOUsuario implements IDAOUsuario {
-  // Referência à coleção "usuarios" no Firestore
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _usuariosCollection =
       FirebaseFirestore.instance.collection('usuarios');
 
   @override
-  Future<DTOUsuario> salvar(DTOUsuario dto) async {
+  Future<DTOUsuario> salvar(DTOUsuario dto, {required String senha}) async {
     if (dto.id == null) {
-      // Cria um novo documento na coleção "usuarios"
-      DocumentReference docRef = await _usuariosCollection.add({
-        'nome': dto.nome,
-        'email': dto.email,
-        'senha': dto.senha,
-      });
-      dto.id = docRef.id; // Atribui o ID gerado pelo Firestore ao DTO
-    } else {
-      // Atualiza o documento existente
-      await _usuariosCollection.doc(dto.id.toString()).update({
-        'nome': dto.nome,
-        'email': dto.email,
-        'senha': dto.senha,
-      });
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: dto.email,
+        password: senha,
+      );
+      dto.id = userCredential.user!.uid;
     }
-    return dto;
-  }
 
-  @override
-  Future<void> deletar(dynamic id) async {
-    await _usuariosCollection.doc(id.toString()).delete();
+    await _usuariosCollection.doc(dto.id).set({
+      'nome': dto.nome,
+      'email': dto.email,
+    }, SetOptions(merge: true));
+
+    return dto;
   }
 
   @override
@@ -43,7 +36,6 @@ class DAOUsuario implements IDAOUsuario {
         id: doc.id,
         nome: data['nome'] as String,
         email: data['email'] as String,
-        senha: data['senha'] as String,
       );
     }
     return null;
@@ -59,11 +51,16 @@ class DAOUsuario implements IDAOUsuario {
         id: doc.id,
         nome: data['nome'] as String,
         email: data['email'] as String,
-        senha: data['senha'] as String,
       );
     }).toList();
   }
-  
+
+  @override
+  Future<void> deletar(dynamic id) async {
+    await _usuariosCollection.doc(id.toString()).delete();
+    await _auth.currentUser!.delete();
+  }
+
   @override
   Future<DTOUsuario?> buscarPorEmail(String email) async {
     QuerySnapshot querySnapshot = await _usuariosCollection
@@ -78,7 +75,6 @@ class DAOUsuario implements IDAOUsuario {
         id: doc.id,
         nome: data['nome'] as String,
         email: data['email'] as String,
-        senha: data['senha'] as String,
       );
     }
     return null;

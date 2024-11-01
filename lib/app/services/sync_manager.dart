@@ -3,10 +3,10 @@ import 'package:projeto_avirario/app/database/supabase/dao_aviario_supabase.dart
 import 'package:projeto_avirario/app/database/supabase/dao_lote_supabase.dart';
 import 'package:projeto_avirario/app/database/supabase/dao_propriedade_supabase.dart';
 import 'package:projeto_avirario/app/database/supabase/dao_usuario_supabase.dart';
-import 'package:projeto_avirario/app/database/sqlite/dao_aviario.dart';
-import 'package:projeto_avirario/app/database/sqlite/dao_lote.dart';
-import 'package:projeto_avirario/app/database/sqlite/dao_propriedade.dart';
-import 'package:projeto_avirario/app/database/sqlite/dao_usuario.dart';
+import 'package:projeto_avirario/app/database/firebase/dao_aviario.dart';
+import 'package:projeto_avirario/app/database/firebase/dao_lote.dart';
+import 'package:projeto_avirario/app/database/firebase/dao_propriedade.dart';
+import 'package:projeto_avirario/app/database/firebase/dao_usuario.dart';
 
 class SyncManager {
   final DAOAviario localAviarioDAO = DAOAviario();

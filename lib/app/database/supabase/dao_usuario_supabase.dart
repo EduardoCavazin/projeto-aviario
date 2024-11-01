@@ -6,13 +6,12 @@ class DAOUsuarioSupabase implements IDAOUsuario {
   final supabase = DatabaseConnection().client;
 
   @override
-  Future<DTOUsuario> salvar(DTOUsuario dto) async {
+  Future<DTOUsuario> salvar(DTOUsuario dto, {required String senha}) async {
     if (dto.id == null) {
       // Inserção de novo usuário
       final response = await supabase.from('usuario').insert({
         'nome': dto.nome,
         'email': dto.email,
-        'senha': dto.senha,
       }).select();
 
       if (response.isEmpty) {
@@ -24,7 +23,6 @@ class DAOUsuarioSupabase implements IDAOUsuario {
         id: data['id'],
         nome: data['nome'],
         email: data['email'],
-        senha: data['senha'],
       );
     } else {
       // Atualização de usuário existente
@@ -33,7 +31,6 @@ class DAOUsuarioSupabase implements IDAOUsuario {
           .update({
             'nome': dto.nome,
             'email': dto.email,
-            'senha': dto.senha,
           })
           .eq('id', dto.id)
           .select();
@@ -69,7 +66,6 @@ class DAOUsuarioSupabase implements IDAOUsuario {
       id: data['id'],
       nome: data['nome'],
       email: data['email'],
-      senha: data['senha'],
     );
   }
 
@@ -88,7 +84,6 @@ class DAOUsuarioSupabase implements IDAOUsuario {
         id: map['id'],
         nome: map['nome'],
         email: map['email'],
-        senha: map['senha'],
       );
     }).toList();
   }
@@ -108,7 +103,6 @@ class DAOUsuarioSupabase implements IDAOUsuario {
         id: data['id'] as int,
         nome: data['nome'] as String,
         email: data['email'] as String,
-        senha: data['senha'] as String,
       );
     }
     return null;
