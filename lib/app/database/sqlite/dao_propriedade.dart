@@ -1,76 +1,50 @@
-import 'package:projeto_avirario/app/database/sqlite/conexao.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_propriedade.dart';
 import 'package:projeto_avirario/app/domain/interface/i_dao_propriedade.dart';
-import 'package:sqflite/sqflite.dart';
 
 class DAOPropriedade implements IDAOPropriedade {
-  late Database _db;
-
-  Future<void> _openDatabase() async {
-    _db = await Conexao.open();
-  }
+  // Referência à coleção "propriedades" no Firestore
+  final CollectionReference _propriedadesCollection =
+      FirebaseFirestore.instance.collection('propriedades');
 
   @override
   Future<DTOPropriedade> salvar(DTOPropriedade dto) async {
-    await _openDatabase();
     if (dto.id == null) {
-      final id = await _db.insert(
-        'propriedade',
-        {
-          'nome': dto.nome,
-          'localizacao': dto.localizacao,
-          'qtdAviario': dto.qtdAviario,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-      return DTOPropriedade(
-        id: id,
-        nome: dto.nome,
-        localizacao: dto.localizacao,
-        qtdAviario: dto.qtdAviario,
-        aviarios: dto.aviarios,
-      );
+      // Cria um novo documento na coleção "propriedades"
+      DocumentReference docRef = await _propriedadesCollection.add({
+        'nome': dto.nome,
+        'localizacao': dto.localizacao,
+        'qtdAviario': dto.qtdAviario,
+      });
+      dto.id = docRef.id; // Atribui o ID gerado pelo Firestore ao DTO
     } else {
-      await _db.update(
-        'propriedade',
-        {
-          'nome': dto.nome,
-          'localizacao': dto.localizacao,
-          'qtdAviario': dto.qtdAviario,
-        },
-        where: 'id = ?',
-        whereArgs: [dto.id],
-      );
-      return dto;
+      // Atualiza o documento existente
+      await _propriedadesCollection.doc(dto.id.toString()).update({
+        'nome': dto.nome,
+        'localizacao': dto.localizacao,
+        'qtdAviario': dto.qtdAviario,
+      });
     }
+    return dto;
   }
 
   @override
   Future<void> deletarPropriedade(dynamic id) async {
-    await _openDatabase();
-    await _db.delete(
-      'propriedade',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    await _propriedadesCollection.doc(id.toString()).delete();
   }
 
   @override
   Future<DTOPropriedade?> buscarPorId(dynamic id) async {
-    await _openDatabase();
-    final List<Map<String, dynamic>> maps = await _db.query(
-      'propriedade',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    if (maps.isNotEmpty) {
-      final map = maps.first;
+    DocumentSnapshot doc = await _propriedadesCollection.doc(id.toString()).get();
+
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       return DTOPropriedade(
-        id: map['id'],
-        nome: map['nome'],
-        localizacao: map['localizacao'],
-        qtdAviario: map['qtdAviario'],
-        aviarios: [],
+        id: doc.id,
+        nome: data['nome'] as String,
+        localizacao: data['localizacao'] as String,
+        qtdAviario: data['qtdAviario'] as int,
+        aviarios: [], // A lista de aviários pode ser carregada separadamente
       );
     }
     return null;
@@ -78,17 +52,17 @@ class DAOPropriedade implements IDAOPropriedade {
 
   @override
   Future<List<DTOPropriedade>> buscarPropriedade() async {
-    await _openDatabase(); 
-    final List<Map<String, dynamic>> maps = await _db.query('propriedade');
-    return List.generate(maps.length, (i) {
-      final map = maps[i];
+    QuerySnapshot querySnapshot = await _propriedadesCollection.get();
+
+    return querySnapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       return DTOPropriedade(
-        id: map['id'],
-        nome: map['nome'],
-        localizacao: map['localizacao'],
-        qtdAviario: map['qtdAviario'],
-        aviarios: [], 
+        id: doc.id,
+        nome: data['nome'] as String,
+        localizacao: data['localizacao'] as String,
+        qtdAviario: data['qtdAviario'] as int,
+        aviarios: [], // Aviários podem ser carregados depois, usando o ID da propriedade
       );
-    });
+    }).toList();
   }
 }

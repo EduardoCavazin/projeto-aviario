@@ -1,74 +1,49 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_usuario.dart';
 import 'package:projeto_avirario/app/domain/interface/i_dao_usuario.dart';
-import 'package:projeto_avirario/app/database/sqlite/conexao.dart';
-import 'package:sqflite/sqflite.dart';
 
 class DAOUsuario implements IDAOUsuario {
-  late Database _db;
-
-  Future<void> _openDatabase() async {
-    _db = await Conexao.open();
-  }
+  // Referência à coleção "usuarios" no Firestore
+  final CollectionReference _usuariosCollection =
+      FirebaseFirestore.instance.collection('usuarios');
 
   @override
   Future<DTOUsuario> salvar(DTOUsuario dto) async {
-    await _openDatabase();
     if (dto.id == null) {
-      final id = await _db.insert(
-        'usuario',
-        {
-          'nome': dto.nome,
-          'email': dto.email,
-          'senha': dto.senha,
-        },
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-      return DTOUsuario(
-        id: id,
-        nome: dto.nome,
-        email: dto.email,
-        senha: dto.senha,
-      );
+      // Cria um novo documento na coleção "usuarios"
+      DocumentReference docRef = await _usuariosCollection.add({
+        'nome': dto.nome,
+        'email': dto.email,
+        'senha': dto.senha,
+      });
+      dto.id = docRef.id; // Atribui o ID gerado pelo Firestore ao DTO
     } else {
-      await _db.update(
-        'usuario',
-        {
-          'nome': dto.nome,
-          'email': dto.email,
-          'senha': dto.senha,
-        },
-        where: 'id = ?',
-        whereArgs: [dto.id],
-      );
-      return dto;
+      // Atualiza o documento existente
+      await _usuariosCollection.doc(dto.id.toString()).update({
+        'nome': dto.nome,
+        'email': dto.email,
+        'senha': dto.senha,
+      });
     }
+    return dto;
   }
 
   @override
   Future<void> deletar(dynamic id) async {
-    await _openDatabase();
-    await _db.delete(
-      'usuario',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    await _usuariosCollection.doc(id.toString()).delete();
   }
 
   @override
   Future<DTOUsuario?> buscarPorId(dynamic id) async {
-    await _openDatabase();
-    final List<Map<String, dynamic>> maps = await _db.query(
-      'usuario',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    if (maps.isNotEmpty) {
-      final map = maps.first;
+    DocumentSnapshot doc = await _usuariosCollection.doc(id.toString()).get();
+
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       return DTOUsuario(
-        id: map['id'],
-        nome: map['nome'],
-        email: map['email'],
-        senha: map['senha'],
+        id: doc.id,
+        nome: data['nome'] as String,
+        email: data['email'] as String,
+        senha: data['senha'] as String,
       );
     }
     return null;
@@ -76,38 +51,36 @@ class DAOUsuario implements IDAOUsuario {
 
   @override
   Future<List<DTOUsuario>> buscarUsuarios() async {
-    await _openDatabase();
-    final List<Map<String, dynamic>> maps = await _db.query('usuario');
-    return List.generate(maps.length, (i) {
-      final map = maps[i];
+    QuerySnapshot querySnapshot = await _usuariosCollection.get();
+
+    return querySnapshot.docs.map((doc) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       return DTOUsuario(
-        id: map['id'],
-        nome: map['nome'],
-        email: map['email'],
-        senha: map['senha'],
+        id: doc.id,
+        nome: data['nome'] as String,
+        email: data['email'] as String,
+        senha: data['senha'] as String,
       );
-    });
+    }).toList();
   }
   
   @override
   Future<DTOUsuario?> buscarPorEmail(String email) async {
-  await _openDatabase();
-  final List<Map<String, dynamic>> maps = await _db.query(
-    'usuario',
-    where: 'email = ?',
-    whereArgs: [email],
-  );
-  
-  if (maps.isNotEmpty) {
-    final map = maps.first;
-    return DTOUsuario(
-      id: map['id'],
-      nome: map['nome'],
-      email: map['email'],
-      senha: map['senha'],
-    );
+    QuerySnapshot querySnapshot = await _usuariosCollection
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentSnapshot doc = querySnapshot.docs.first;
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return DTOUsuario(
+        id: doc.id,
+        nome: data['nome'] as String,
+        email: data['email'] as String,
+        senha: data['senha'] as String,
+      );
+    }
+    return null;
   }
-  
-  return null;
-}
 }

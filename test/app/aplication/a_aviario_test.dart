@@ -3,7 +3,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:projeto_avirario/app/database/sqlite/conexao.dart';
 import 'package:projeto_avirario/app/domain/dto/dto_aviario.dart';
 import 'package:projeto_avirario/app/database/sqlite/dao_aviario.dart';
-import 'package:projeto_avirario/app/application/a_aviario.dart';
+import 'package:projeto_avirario/app/aplication/a_aviario.dart';
 
 void main() async {
   late AAviario aAviario;

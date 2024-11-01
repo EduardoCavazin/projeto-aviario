@@ -20,7 +20,6 @@ void main() {
 
   group('PropriedadeSupabaseDAO', () {
     test('deve salvar uma propriedade com sucesso', () async {
-      // Cria uma resposta simulada para o Supabase
       final mockResponse = {
         'id': 1,
         'nome': 'Propriedade Teste',
@@ -28,7 +27,6 @@ void main() {
         'qtdAviario': 5,
       };
 
-      // Simula a resposta do método insert() e select()
       when(mockSupabaseClient
               .from('propriedade')
               .insert(any))

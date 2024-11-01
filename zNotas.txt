@@ -1,3 +1,0 @@
-Adicionar mais Regras de Negócio;
-
-Reforçar Testes;

@@ -53,14 +53,12 @@ class Lote {
     required double novoPesoMedio,
     required double novaQuantidadeRacao,
   }) {
-    // Implementação do registro de dados
     quantidadeAves -= novasMortes;
     pesoMedio = novoPesoMedio;
     qtdRacaoInicial += novaQuantidadeRacao;
   }
 
   void gerarRelatorio() {
-    // TODO: lógica para gerar relatório
   }
 
   void validarQtdAves() {
