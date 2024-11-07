@@ -1,7 +1,7 @@
 class AviaryDTO {
   String id;
-  final String name;
-  final int capacity;
+  String name;
+  int capacity;
 
   AviaryDTO({
     required this.id,

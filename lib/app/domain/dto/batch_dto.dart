@@ -1,10 +1,10 @@
 class BatchDTO {
   String id;
-  final String aviaryId;
-  final DateTime entryDate;
-  final int birdCount;
-  final double averageWeight;
-  final double initialFeedQuantity;
+  String aviaryId;
+  DateTime entryDate;
+  int birdCount;
+  double averageWeight;
+  double initialFeedQuantity;
 
   BatchDTO({
     required this.id,
