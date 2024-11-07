@@ -1,4 +1,4 @@
-package com.example.projeto_avirario
+package com.example.projeto_ddm
 
 import io.flutter.embedding.android.FlutterActivity
 

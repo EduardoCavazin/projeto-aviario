@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1000019966117",
+    "project_id": "projeto-aviario-7f939",
+    "storage_bucket": "projeto-aviario-7f939.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000019966117:android:2034b72a67ecc8a96d754c",
+        "android_client_info": {
+          "package_name": "com.aviario.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyOhcJ86V6El5k7i9pqW6zTT8gGjXm3jg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
