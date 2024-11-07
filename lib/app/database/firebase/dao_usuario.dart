@@ -4,9 +4,14 @@ import 'package:projeto_avirario/app/domain/dto/dto_usuario.dart';
 import 'package:projeto_avirario/app/domain/interface/i_dao_usuario.dart';
 
 class DAOUsuario implements IDAOUsuario {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final CollectionReference _usuariosCollection =
-      FirebaseFirestore.instance.collection('usuarios');
+  final FirebaseAuth _auth;
+  final CollectionReference _usuariosCollection;
+
+  DAOUsuario({
+    FirebaseAuth? auth,
+    FirebaseFirestore? firestore,
+  })  : _auth = auth ?? FirebaseAuth.instance,
+        _usuariosCollection = (firestore ?? FirebaseFirestore.instance).collection('usuarios');
 
   @override
   Future<DTOUsuario> salvar(DTOUsuario dto, {required String senha}) async {
