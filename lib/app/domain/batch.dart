@@ -3,7 +3,7 @@ import 'aviary.dart';
 
 class Batch {
   String id;
-  String aviaryId; // ID do aviário ao qual o lote pertence
+  String aviaryId;
   DateTime entryDate;
   int birdCount;
   double averageWeight;
