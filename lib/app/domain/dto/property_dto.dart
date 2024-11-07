@@ -1,5 +1,5 @@
 class PropertyDTO {
-  final String id;
+  String id;
   final String name;
   final String location;
   final int aviaryCount;

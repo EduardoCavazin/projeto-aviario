@@ -1,5 +1,5 @@
 class AviaryDTO {
-  final String id;
+  String id;
   final String name;
   final int capacity;
 

@@ -1,5 +1,5 @@
 class BatchDTO {
-  final String id;
+  String id;
   final String aviaryId;
   final DateTime entryDate;
   final int birdCount;
