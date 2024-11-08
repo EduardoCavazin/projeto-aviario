@@ -11,8 +11,8 @@ class User {
     required this.id,
     required this.name,
     required this.email,
-    this.properties = const [],
-  }) {
+    List<Property>? properties,
+  }) : properties = properties ?? [] {
     _validate();
   }
 

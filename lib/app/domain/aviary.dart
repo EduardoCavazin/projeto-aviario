@@ -69,8 +69,8 @@ class Aviary {
   }
 
   void _validateCapacity() {
-    if (capacity <= 20000 && capacity >= 50000) {
-      throw Exception('Capacidade deve ser entre 20.000 e 50.000 aves');
-    }
+  if (capacity < 20000 || capacity > 50000) {
+    throw Exception('Capacidade deve ser entre 20.000 e 50.000 aves');
   }
+}
 }

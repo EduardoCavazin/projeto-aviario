@@ -16,7 +16,19 @@ class Batch {
     required this.birdCount,
     required this.averageWeight,
     required this.initialFeedQuantity,
-  });
+    required Aviary aviary,
+  }){
+    _validate(aviary);
+  }
+
+  Batch._withoutValidation({
+  required this.id,
+  required this.aviaryId,
+  required this.entryDate,
+  required this.birdCount,
+  required this.averageWeight,
+  required this.initialFeedQuantity,
+});
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,13 +42,14 @@ class Batch {
   }
 
   factory Batch.fromMap(Map<String, dynamic> map, String documentId) {
-    return Batch(
+    return Batch._withoutValidation(
       id: documentId,
       aviaryId: map['aviaryId'],
       entryDate: DateTime.parse(map['entryDate']),
       birdCount: map['birdCount'],
       averageWeight: map['averageWeight'],
       initialFeedQuantity: map['initialFeedQuantity'],
+      
     );
   }
 

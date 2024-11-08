@@ -13,8 +13,8 @@ class Property {
     required this.name,
     required this.location,
     this.aviaryCount = 0,
-    this.aviaries = const [],
-  }){
+    List<Aviary>? aviaries,
+  }) : aviaries = aviaries ?? [] {
     _validate();
   }
 
@@ -23,22 +23,23 @@ class Property {
       'id': id,
       'name': name,
       'location': location,
-      'aviaryCount': aviaries.length, 
+      'aviaryCount': aviaryCount, 
       'aviaries': aviaries.map((aviary) => aviary.toMap()).toList(),
     };
   }
 
-  factory Property.fromMap(Map<String, dynamic> map, String documentId) {
-    return Property(
-      id: documentId,
-      name: map['name'],
-      location: map['location'],
-      aviaryCount: map['aviaryCount'] ?? 0,
-      aviaries: (map['aviaries'] as List)
-          .map((aviaryMap) => Aviary.fromMap(aviaryMap, aviaryMap['id']))
-          .toList(),
-    );
-  }
+  factory Property.fromMap(Map<String, dynamic> map, String id) {
+  return Property(
+    id: id,
+    name: map['name'],
+    location: map['location'],
+    aviaryCount: map['aviaryCount'] ?? 0,
+    aviaries: (map['aviaries'] as List<dynamic>?)
+            ?.map((aviaryMap) => Aviary.fromMap(aviaryMap, aviaryMap['id']))
+            .toList() ??
+        [], 
+  );
+}
 
   Future<void> save() async {
     final collection = FirebaseFirestore.instance.collection('properties');
