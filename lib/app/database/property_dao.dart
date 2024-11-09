@@ -7,11 +7,14 @@ class PropertyDAO implements IPropertyDAO {
 
   @override
   Future<void> save(PropertyDTO property) async {
+    final data = property.toMap();
+    data['userId'] = property.userId;
+
     if (property.id.isEmpty) {
-      DocumentReference doc = await collection.add(property.toMap());
+      DocumentReference doc = await collection.add(data);
       property.id = doc.id;
     } else {
-      await collection.doc(property.id).set(property.toMap(), SetOptions(merge: true));
+      await collection.doc(property.id).set(data, SetOptions(merge: true));
     }
   }
 
@@ -27,6 +30,13 @@ class PropertyDAO implements IPropertyDAO {
       return PropertyDTO.fromMap(doc.data()!, doc.id);
     }
     return null;
+  }
+
+  Future<List<PropertyDTO>> findAllByUser(String userId) async {
+    final snapshot = await collection.where('userId', isEqualTo: userId).get();
+    return snapshot.docs
+        .map((doc) => PropertyDTO.fromMap(doc.data(), doc.id))
+        .toList();
   }
 
   @override

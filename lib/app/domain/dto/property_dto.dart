@@ -3,12 +3,14 @@ class PropertyDTO {
   String name;
   String location;
   int aviaryCount;
+  String userId;
 
   PropertyDTO({
     required this.id,
     required this.name,
     required this.location,
     required this.aviaryCount,
+    required this.userId,
   });
 
   Map<String, dynamic> toMap() {
@@ -16,6 +18,7 @@ class PropertyDTO {
       'id': id,
       'name': name,
       'location': location,
+      'userId': userId,
       'aviaryCount': aviaryCount,
     };
   }
@@ -25,6 +28,7 @@ class PropertyDTO {
       id: documentId,
       name: map['name'],
       location: map['location'],
+      userId: map['userId'],
       aviaryCount: map['aviaryCount'] ?? 0,
     );
   }

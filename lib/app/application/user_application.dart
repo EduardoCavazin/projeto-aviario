@@ -1,8 +1,54 @@
 import 'package:projeto_ddm/app/domain/dto/user_dto.dart';
 import 'package:projeto_ddm/app/database/user_dao.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserApplication {
   final UserDAO _userDAO = UserDAO();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> registerUserWithEmail(
+      String name, String email, String password) async {
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      String uid = userCredential.user!.uid;
+
+      await userCredential.user!.sendEmailVerification();
+
+      UserDTO newUser = UserDTO(
+        id: uid,
+        name: name,
+        email: email,
+      );
+
+      await _userDAO.save(newUser);
+    } catch (e) {
+      print("Erro ao registrar o usuário: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> loginUserWithEmail(String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      print("Erro ao realizar login: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print("Erro ao resetar a senha: $e");
+      rethrow;
+    }
+  }
 
   Future<void> saveUser(UserDTO user) async {
     try {
@@ -42,7 +88,7 @@ class UserApplication {
 
   Future<UserDTO> createUser(String name, String email) async {
     final user = UserDTO(
-      id: '', 
+      id: '',
       name: name,
       email: email,
     );

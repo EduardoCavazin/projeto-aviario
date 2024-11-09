@@ -31,21 +31,22 @@ class PropertyApplication {
     }
   }
 
-  Future<List<PropertyDTO>> getAllProperties() async {
+  Future<List<PropertyDTO>> getAllPropertiesByUser(String userId) async {
     try {
-      return await _propertyDAO.findAll();
+      return await _propertyDAO.findAllByUser(userId);
     } catch (e) {
-      print("Erro ao buscar todas as propriedades: $e");
+      print("Erro ao buscar propriedades para o usuário $userId: $e");
       rethrow;
     }
   }
 
-  Future<PropertyDTO> createProperty(String name, String location, int aviaryCount) async {
+  Future<PropertyDTO> createProperty(String name, String location, int aviaryCount, String userId) async {
     final property = PropertyDTO(
       id: '',
       name: name,
       location: location,
       aviaryCount: aviaryCount,
+      userId: userId,
     );
     await saveProperty(property);
     return property;

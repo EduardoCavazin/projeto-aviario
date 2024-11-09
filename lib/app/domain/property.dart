@@ -7,11 +7,13 @@ class Property {
   String location;
   int aviaryCount;
   List<Aviary> aviaries;
+  String userId;
 
   Property({
     required this.id,
     required this.name,
     required this.location,
+    required this.userId,
     this.aviaryCount = 0,
     List<Aviary>? aviaries,
   }) : aviaries = aviaries ?? [] {
@@ -23,6 +25,7 @@ class Property {
       'id': id,
       'name': name,
       'location': location,
+      'userId': userId,
       'aviaryCount': aviaryCount, 
       'aviaries': aviaries.map((aviary) => aviary.toMap()).toList(),
     };
@@ -33,6 +36,7 @@ class Property {
     id: id,
     name: map['name'],
     location: map['location'],
+    userId: map['userId'],
     aviaryCount: map['aviaryCount'] ?? 0,
     aviaries: (map['aviaries'] as List<dynamic>?)
             ?.map((aviaryMap) => Aviary.fromMap(aviaryMap, aviaryMap['id']))
