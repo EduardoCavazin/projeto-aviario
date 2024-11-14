@@ -40,11 +40,12 @@ class AviaryApplication {
     }
   }
 
-  Future<AviaryDTO> createAviary(String name, int capacity) async {
+  Future<AviaryDTO> createAviary({required String name, required int capacity, required String propertyId}) async {
     final aviary = AviaryDTO(
       id: '',
       name: name,
       capacity: capacity,
+      propertyId: propertyId,
     );
     await saveAviary(aviary);
     return aviary;
@@ -58,6 +59,15 @@ class AviaryApplication {
       await saveAviary(aviary);
     } else {
       print("Aviário não encontrado");
+    }
+  }
+
+  Future<List<AviaryDTO>> getAllAviariesByProperty(String propertyId) async {
+    try {
+      return await _aviaryDAO.findAllByProperty(propertyId);
+    } catch (e) {
+      print("Erro ao buscar aviários da propriedade: $e");
+      rethrow;
     }
   }
 }

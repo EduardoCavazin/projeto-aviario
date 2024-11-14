@@ -9,6 +9,7 @@ class Routes {
   static const String login = '/login';
   static const String cadastroUsuario = '/cadastro-usuario';
   static const String propriedade = '/propriedade';
+  static const String aviario = '/aviario';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {

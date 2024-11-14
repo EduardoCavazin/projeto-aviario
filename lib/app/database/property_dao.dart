@@ -13,6 +13,7 @@ class PropertyDAO implements IPropertyDAO {
     if (property.id.isEmpty) {
       DocumentReference doc = await collection.add(data);
       property.id = doc.id;
+      await collection.doc(property.id).update({'id': property.id}); 
     } else {
       await collection.doc(property.id).set(data, SetOptions(merge: true));
     }

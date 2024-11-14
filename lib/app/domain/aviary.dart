@@ -4,12 +4,14 @@ class Aviary {
   String id;
   String name;
   int capacity;
+  String propertyId; 
 
   Aviary({
     required this.id,
     required this.name,
     required this.capacity,
-  }){
+    required this.propertyId, 
+  }) {
     _validate();
   }
 
@@ -18,6 +20,7 @@ class Aviary {
       'id': id,
       'name': name,
       'capacity': capacity,
+      'propertyId': propertyId, 
     };
   }
 
@@ -26,6 +29,7 @@ class Aviary {
       id: documentId,
       name: map['name'],
       capacity: map['capacity'],
+      propertyId: map['propertyId'], 
     );
   }
 
@@ -44,8 +48,12 @@ class Aviary {
     await FirebaseFirestore.instance.collection('aviaries').doc(id).delete();
   }
 
-  static Future<List<Aviary>> getAll() async {
-    final snapshot = await FirebaseFirestore.instance.collection('aviaries').get();
+  static Future<List<Aviary>> getAllByProperty(String propertyId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('aviaries')
+        .where('propertyId', isEqualTo: propertyId)
+        .get();
+
     return snapshot.docs.map((doc) => Aviary.fromMap(doc.data(), doc.id)).toList();
   }
 
@@ -69,8 +77,8 @@ class Aviary {
   }
 
   void _validateCapacity() {
-  if (capacity < 20000 || capacity > 50000) {
-    throw Exception('Capacidade deve ser entre 20.000 e 50.000 aves');
+    if (capacity < 20000 || capacity > 50000) {
+      throw Exception('Capacidade deve ser entre 20.000 e 50.000 aves');
+    }
   }
-}
 }

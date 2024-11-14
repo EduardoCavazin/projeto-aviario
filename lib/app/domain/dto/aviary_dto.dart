@@ -2,11 +2,14 @@ class AviaryDTO {
   String id;
   String name;
   int capacity;
+  String propertyId;
+
 
   AviaryDTO({
     required this.id,
     required this.name,
     required this.capacity,
+    required this.propertyId
   });
 
   Map<String, dynamic> toMap() {
@@ -14,6 +17,7 @@ class AviaryDTO {
       'id': id,
       'name': name,
       'capacity': capacity,
+      'propertyId': propertyId
     };
   }
 
@@ -22,6 +26,7 @@ class AviaryDTO {
       id: documentId,
       name: map['name'],
       capacity: map['capacity'],
+      propertyId: map['propertyId']
     );
   }
 }
