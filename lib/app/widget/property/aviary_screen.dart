@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_ddm/app/application/aviary_application.dart';
 import 'package:projeto_ddm/app/domain/dto/aviary_dto.dart';
+import 'package:projeto_ddm/app/widget/property/batch_screen.dart';
 
 class AviaryScreen extends StatefulWidget {
   final String propertyId;
   final String propertyName;
-  final int aviaryCount; 
+  final int aviaryCount;
 
   const AviaryScreen({
     Key? key,
     required this.propertyId,
     required this.propertyName,
-    required this.aviaryCount, 
+    required this.aviaryCount,
   }) : super(key: key);
 
   @override
@@ -21,7 +22,7 @@ class AviaryScreen extends StatefulWidget {
 class _AviaryScreenState extends State<AviaryScreen> {
   final AviaryApplication _aviaryApplication = AviaryApplication();
   List<AviaryDTO> _aviaries = [];
-  int _currentAviaryCount = 0; 
+  int _currentAviaryCount = 0;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _capacityController = TextEditingController();
@@ -34,10 +35,11 @@ class _AviaryScreenState extends State<AviaryScreen> {
 
   Future<void> _loadAviaries() async {
     try {
-      final aviaries = await _aviaryApplication.getAllAviariesByProperty(widget.propertyId);
+      final aviaries =
+          await _aviaryApplication.getAllAviariesByProperty(widget.propertyId);
       setState(() {
         _aviaries = aviaries;
-        _currentAviaryCount = aviaries.length; 
+        _currentAviaryCount = aviaries.length;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -57,7 +59,8 @@ class _AviaryScreenState extends State<AviaryScreen> {
     final capacity = int.tryParse(_capacityController.text);
     if (capacity == null || capacity <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Informe um número válido para a capacidade')),
+        const SnackBar(
+            content: Text('Informe um número válido para a capacidade')),
       );
       return;
     }
@@ -106,7 +109,8 @@ class _AviaryScreenState extends State<AviaryScreen> {
               ),
               TextField(
                 controller: _capacityController,
-                decoration: const InputDecoration(labelText: 'Capacidade do Aviário'),
+                decoration:
+                    const InputDecoration(labelText: 'Capacidade do Aviário'),
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 10),
@@ -130,7 +134,7 @@ class _AviaryScreenState extends State<AviaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isAddButtonDisabled = _currentAviaryCount >= widget.aviaryCount; 
+    final isAddButtonDisabled = _currentAviaryCount >= widget.aviaryCount;
 
     return Scaffold(
       appBar: AppBar(
@@ -146,11 +150,22 @@ class _AviaryScreenState extends State<AviaryScreen> {
                 return ListTile(
                   title: Text(aviary.name),
                   subtitle: Text('Capacidade: ${aviary.capacity} aves'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BatchScreen(
+                          aviaryId: aviary.id,
+                          aviaryName: aviary.name,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
       floatingActionButton: isAddButtonDisabled
-          ? null 
+          ? null
           : FloatingActionButton(
               onPressed: _showAddAviaryForm,
               backgroundColor: const Color(0xFF18234E),
