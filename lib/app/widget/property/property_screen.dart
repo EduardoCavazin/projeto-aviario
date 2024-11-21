@@ -78,7 +78,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
         const SnackBar(content: Text('Propriedade adicionada com sucesso!')),
       );
 
-      Navigator.of(context).pop(); 
+      Navigator.of(context).pop();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Erro ao adicionar propriedade')),
@@ -258,6 +258,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
                         builder: (context) => AviaryScreen(
                           propertyId: property.id,
                           propertyName: property.name,
+                          aviaryCount: property.aviaryCount, 
                         ),
                       ),
                     );

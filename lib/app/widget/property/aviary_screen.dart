@@ -5,8 +5,14 @@ import 'package:projeto_ddm/app/domain/dto/aviary_dto.dart';
 class AviaryScreen extends StatefulWidget {
   final String propertyId;
   final String propertyName;
+  final int aviaryCount; 
 
-  const AviaryScreen({Key? key, required this.propertyId, required this.propertyName}) : super(key: key);
+  const AviaryScreen({
+    Key? key,
+    required this.propertyId,
+    required this.propertyName,
+    required this.aviaryCount, 
+  }) : super(key: key);
 
   @override
   _AviaryScreenState createState() => _AviaryScreenState();
@@ -15,6 +21,7 @@ class AviaryScreen extends StatefulWidget {
 class _AviaryScreenState extends State<AviaryScreen> {
   final AviaryApplication _aviaryApplication = AviaryApplication();
   List<AviaryDTO> _aviaries = [];
+  int _currentAviaryCount = 0; 
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _capacityController = TextEditingController();
@@ -30,6 +37,7 @@ class _AviaryScreenState extends State<AviaryScreen> {
       final aviaries = await _aviaryApplication.getAllAviariesByProperty(widget.propertyId);
       setState(() {
         _aviaries = aviaries;
+        _currentAviaryCount = aviaries.length; 
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -69,7 +77,7 @@ class _AviaryScreenState extends State<AviaryScreen> {
         const SnackBar(content: Text('Aviário adicionado com sucesso!')),
       );
 
-      Navigator.of(context).pop(); 
+      Navigator.of(context).pop();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Erro ao adicionar aviário')),
@@ -122,6 +130,8 @@ class _AviaryScreenState extends State<AviaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isAddButtonDisabled = _currentAviaryCount >= widget.aviaryCount; 
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Aviários - ${widget.propertyName}'),
@@ -139,11 +149,13 @@ class _AviaryScreenState extends State<AviaryScreen> {
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddAviaryForm,
-        backgroundColor: const Color(0xFF18234E),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: isAddButtonDisabled
+          ? null 
+          : FloatingActionButton(
+              onPressed: _showAddAviaryForm,
+              backgroundColor: const Color(0xFF18234E),
+              child: const Icon(Icons.add),
+            ),
     );
   }
 }
