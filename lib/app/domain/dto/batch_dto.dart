@@ -3,16 +3,18 @@ class BatchDTO {
   String aviaryId;
   DateTime entryDate;
   int birdCount;
-  double averageWeight;
-  double initialFeedQuantity;
+  List<Map<String, dynamic>> feedRecords;
+  List<Map<String, dynamic>> mortalityRecords;
+  List<Map<String, dynamic>> weightRecords;
 
   BatchDTO({
     required this.id,
     required this.aviaryId,
     required this.entryDate,
     required this.birdCount,
-    required this.averageWeight,
-    required this.initialFeedQuantity,
+    this.feedRecords = const [],
+    this.mortalityRecords = const [],
+    this.weightRecords = const [],
   });
 
   Map<String, dynamic> toMap() {
@@ -21,8 +23,9 @@ class BatchDTO {
       'aviaryId': aviaryId,
       'entryDate': entryDate.toIso8601String(),
       'birdCount': birdCount,
-      'averageWeight': averageWeight,
-      'initialFeedQuantity': initialFeedQuantity,
+      'feedRecords': feedRecords,
+      'mortalityRecords': mortalityRecords,
+      'weightRecords': weightRecords,
     };
   }
 
@@ -32,8 +35,15 @@ class BatchDTO {
       aviaryId: map['aviaryId'],
       entryDate: DateTime.parse(map['entryDate']),
       birdCount: map['birdCount'],
-      averageWeight: map['averageWeight'],
-      initialFeedQuantity: map['initialFeedQuantity'],
+      feedRecords: (map['feedRecords'] as List<dynamic>? ?? [])
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList(),
+      mortalityRecords: (map['mortalityRecords'] as List<dynamic>? ?? [])
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList(),
+      weightRecords: (map['weightRecords'] as List<dynamic>? ?? [])
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList(),
     );
   }
 }

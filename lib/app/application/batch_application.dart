@@ -40,28 +40,54 @@ class BatchApplication {
     }
   }
 
-  Future<BatchDTO> createBatch(String aviaryId, DateTime entryDate, int birdCount, double averageWeight, double initialFeedQuantity) async {
+  Future<BatchDTO> createBatch(String aviaryId, DateTime entryDate, int birdCount) async {
     final batch = BatchDTO(
-      id: '', 
+      id: '',
       aviaryId: aviaryId,
       entryDate: entryDate,
       birdCount: birdCount,
-      averageWeight: averageWeight,
-      initialFeedQuantity: initialFeedQuantity,
+      feedRecords: [],
+      mortalityRecords: [],
+      weightRecords: [],
     );
     await saveBatch(batch);
     return batch;
   }
 
-  Future<void> updateBatch(String id, int newBirdCount, double newAverageWeight, double newInitialFeedQuantity) async {
+  Future<void> updateBatch(String id, int newBirdCount) async {
     final batch = await getBatchById(id);
     if (batch != null) {
       batch.birdCount = newBirdCount;
-      batch.averageWeight = newAverageWeight;
-      batch.initialFeedQuantity = newInitialFeedQuantity;
       await saveBatch(batch);
     } else {
       print("Lote não encontrado");
+    }
+  }
+
+  Future<void> addFeedRecord(String batchId, Map<String, dynamic> feedRecord) async {
+    try {
+      await _batchDAO.addFeedRecord(batchId, feedRecord);
+    } catch (e) {
+      print("Erro ao adicionar registro de ração: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> addMortalityRecord(String batchId, Map<String, dynamic> mortalityRecord) async {
+    try {
+      await _batchDAO.addMortalityRecord(batchId, mortalityRecord);
+    } catch (e) {
+      print("Erro ao adicionar registro de mortalidade: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> addWeightRecord(String batchId, Map<String, dynamic> weightRecord) async {
+    try {
+      await _batchDAO.addWeightRecord(batchId, weightRecord);
+    } catch (e) {
+      print("Erro ao adicionar registro de peso: $e");
+      rethrow;
     }
   }
 }

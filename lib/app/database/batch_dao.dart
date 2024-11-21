@@ -7,11 +7,15 @@ class BatchDAO implements IBatchDAO {
 
   @override
   Future<void> save(BatchDTO batch) async {
+    final data = batch.toMap();
+    data['aviaryId'] = batch.aviaryId;
+
     if (batch.id.isEmpty) {
-      DocumentReference doc = await collection.add(batch.toMap());
+      DocumentReference doc = await collection.add(data);
       batch.id = doc.id;
+      await collection.doc(batch.id).update({'id': batch.id});
     } else {
-      await collection.doc(batch.id).set(batch.toMap(), SetOptions(merge: true));
+      await collection.doc(batch.id).set(data, SetOptions(merge: true));
     }
   }
 
@@ -31,9 +35,37 @@ class BatchDAO implements IBatchDAO {
 
   @override
   Future<List<BatchDTO>> findAllByAviary(String aviaryId) async {
-    final snapshot = await collection.where('aviaryId', isEqualTo: aviaryId).get();
+    final snapshot =
+        await collection.where('aviaryId', isEqualTo: aviaryId).get();
     return snapshot.docs
         .map((doc) => BatchDTO.fromMap(doc.data(), doc.id))
         .toList();
+  }
+
+  @override
+  Future<void> addFeedRecord(
+      String batchId, Map<String, dynamic> feedRecord) async {
+    final docRef = collection.doc(batchId);
+    await docRef.update({
+      'feedRecords': FieldValue.arrayUnion([feedRecord]),
+    });
+  }
+
+  @override
+  Future<void> addMortalityRecord(
+      String batchId, Map<String, dynamic> mortalityRecord) async {
+    final docRef = collection.doc(batchId);
+    await docRef.update({
+      'mortalityRecords': FieldValue.arrayUnion([mortalityRecord]),
+    });
+  }
+
+  @override
+  Future<void> addWeightRecord(
+      String batchId, Map<String, dynamic> weightRecord) async {
+    final docRef = collection.doc(batchId);
+    await docRef.update({
+      'weightRecords': FieldValue.arrayUnion([weightRecord]),
+    });
   }
 }

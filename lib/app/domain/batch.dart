@@ -1,34 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'aviary.dart';
+import 'package:projeto_ddm/app/domain/aviary.dart';
 
 class Batch {
   String id;
   String aviaryId;
   DateTime entryDate;
   int birdCount;
-  double averageWeight;
-  double initialFeedQuantity;
+  List<Map<String, dynamic>> feedRecords;
+  List<Map<String, dynamic>> mortalityRecords;
+  List<Map<String, dynamic>> weightRecords;
 
   Batch({
     required this.id,
     required this.aviaryId,
     required this.entryDate,
     required this.birdCount,
-    required this.averageWeight,
-    required this.initialFeedQuantity,
+    this.feedRecords = const [],
+    this.mortalityRecords = const [],
+    this.weightRecords = const [],
     required Aviary aviary,
-  }){
-    _validate(aviary);
+  }) {
+    _validate(aviary); 
   }
 
   Batch._withoutValidation({
-  required this.id,
-  required this.aviaryId,
-  required this.entryDate,
-  required this.birdCount,
-  required this.averageWeight,
-  required this.initialFeedQuantity,
-});
+    required this.id,
+    required this.aviaryId,
+    required this.entryDate,
+    required this.birdCount,
+    this.feedRecords = const [],
+    this.mortalityRecords = const [],
+    this.weightRecords = const [],
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -36,8 +39,9 @@ class Batch {
       'aviaryId': aviaryId,
       'entryDate': entryDate.toIso8601String(),
       'birdCount': birdCount,
-      'averageWeight': averageWeight,
-      'initialFeedQuantity': initialFeedQuantity,
+      'feedRecords': feedRecords,
+      'mortalityRecords': mortalityRecords,
+      'weightRecords': weightRecords,
     };
   }
 
@@ -47,9 +51,9 @@ class Batch {
       aviaryId: map['aviaryId'],
       entryDate: DateTime.parse(map['entryDate']),
       birdCount: map['birdCount'],
-      averageWeight: map['averageWeight'],
-      initialFeedQuantity: map['initialFeedQuantity'],
-      
+      feedRecords: List<Map<String, dynamic>>.from(map['feedRecords'] ?? []),
+      mortalityRecords: List<Map<String, dynamic>>.from(map['mortalityRecords'] ?? []),
+      weightRecords: List<Map<String, dynamic>>.from(map['weightRecords'] ?? []),
     );
   }
 
@@ -60,7 +64,7 @@ class Batch {
 
     if (id.isEmpty) {
       DocumentReference docRef = await collection.add(toMap());
-      id = docRef.id; 
+      id = docRef.id;
     } else {
       await collection.doc(id).set(toMap(), SetOptions(merge: true));
     }
@@ -89,8 +93,6 @@ class Batch {
 
   void _validate(Aviary aviary) {
     _validateBirdCount(aviary);
-    _validateAverageWeight();
-    _validateFeedQuantity();
   }
 
   void _validateBirdCount(Aviary aviary) {
@@ -102,15 +104,56 @@ class Batch {
     }
   }
 
-  void _validateAverageWeight() {
-    if (averageWeight <= 0) {
-      throw Exception('Average weight must be greater than zero');
+  void addFeedRecord(DateTime date, double quantity) {
+    if (quantity == 0) {
+      throw Exception('Feed quantity cannot be zero.');
     }
+
+    feedRecords.add({
+      'date': date.toIso8601String(),
+      'quantity': quantity,
+    });
   }
 
-  void _validateFeedQuantity() {
-    if (initialFeedQuantity <= 0) {
-      throw Exception('Initial feed quantity must be greater than zero');
+  void addMortalityRecord(DateTime date, int mortalityCount) {
+    if (mortalityCount < 0) {
+      throw Exception('Mortality count cannot be negative.');
     }
+
+    final totalMortality = calculateTotalMortality();
+    if (totalMortality + mortalityCount > birdCount) {
+      throw Exception('Total mortality exceeds initial bird count.');
+    }
+
+    mortalityRecords.add({
+      'date': date.toIso8601String(),
+      'mortalityCount': mortalityCount,
+    });
+  }
+
+  void addWeightRecord(int week, double averageWeight) {
+    if (averageWeight <= 0) {
+      throw Exception('Average weight must be greater than zero.');
+    }
+
+    weightRecords.add({
+      'week': week,
+      'averageWeight': averageWeight,
+    });
+  }
+
+  int calculateTotalMortality() {
+    return mortalityRecords.fold(0, (total, record) => total + (record['mortalityCount'] as int));
+  }
+
+  double calculateFeedBalance() {
+    return feedRecords.fold(0.0, (total, record) => total + (record['quantity'] as double));
+  }
+
+  double getFinalAverageWeight() {
+    if (weightRecords.isEmpty) {
+      throw Exception('No weight records available.');
+    }
+    return weightRecords.last['averageWeight'] as double;
   }
 }
