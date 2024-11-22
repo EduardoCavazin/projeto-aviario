@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_ddm/app/application/aviary_application.dart';
 import 'package:projeto_ddm/app/domain/dto/aviary_dto.dart';
-import 'package:projeto_ddm/app/widget/property/batch_screen.dart';
+import 'package:projeto_ddm/app/widget/property/batch_screen_list.dart';
 
 class AviaryScreen extends StatefulWidget {
   final String propertyId;
@@ -139,7 +139,7 @@ class _AviaryScreenState extends State<AviaryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Aviários - ${widget.propertyName}'),
-        backgroundColor: const Color(0xFF18234E),
+        backgroundColor: Color.fromARGB(255, 64, 95, 218),
       ),
       body: _aviaries.isEmpty
           ? const Center(child: Text('Nenhum aviário cadastrado.'))
@@ -157,6 +157,7 @@ class _AviaryScreenState extends State<AviaryScreen> {
                         builder: (context) => BatchScreen(
                           aviaryId: aviary.id,
                           aviaryName: aviary.name,
+                          aviaryCapacity: aviary.capacity,
                         ),
                       ),
                     );

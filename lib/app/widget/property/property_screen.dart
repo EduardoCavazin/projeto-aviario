@@ -238,7 +238,7 @@ class _PropertyScreenState extends State<PropertyScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Propriedades'),
-        backgroundColor: const Color(0xFF18234E),
+        backgroundColor: Color.fromARGB(255, 64, 95, 218),
       ),
       body: _properties.isEmpty
           ? const Center(child: Text('Nenhuma propriedade cadastrada.'))

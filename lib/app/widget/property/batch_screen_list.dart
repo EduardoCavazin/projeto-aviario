@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_ddm/app/application/batch_application.dart';
 import 'package:projeto_ddm/app/domain/dto/batch_dto.dart';
+import 'package:projeto_ddm/app/widget/property/add_batch_form.dart';
 
 class BatchScreen extends StatefulWidget {
   final String aviaryId;
   final String aviaryName;
+  final int aviaryCapacity;
 
   const BatchScreen({
     Key? key,
     required this.aviaryId,
     required this.aviaryName,
+    required this.aviaryCapacity,
   }) : super(key: key);
 
   @override
@@ -39,12 +42,26 @@ class _BatchScreenState extends State<BatchScreen> {
     }
   }
 
+  void _navigateToAddBatchForm() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddBatchForm(
+          aviaryId: widget.aviaryId,
+          aviaryCapacity: widget.aviaryCapacity,
+        ),
+      ),
+    ).then((_) {
+      _loadBatches(); 
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Lotes - ${widget.aviaryName}'),
-        backgroundColor: const Color(0xFF18234E),
+        backgroundColor: Color.fromARGB(255, 64, 95, 218),
       ),
       body: _batches.isEmpty
           ? const Center(child: Text('Nenhum lote cadastrado.'))
@@ -59,9 +76,7 @@ class _BatchScreenState extends State<BatchScreen> {
               },
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          
-        },
+        onPressed: _navigateToAddBatchForm,
         backgroundColor: const Color(0xFF18234E),
         child: const Icon(Icons.add),
       ),
