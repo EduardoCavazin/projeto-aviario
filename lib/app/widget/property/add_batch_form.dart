@@ -22,13 +22,12 @@ class _AddBatchFormState extends State<AddBatchForm> {
 
   final TextEditingController _birdCountController = TextEditingController();
   final TextEditingController _feedQuantityController = TextEditingController();
-  final TextEditingController _batchNameController = TextEditingController();
 
   DateTime? _entryDate;
   DateTime? _feedArrivalDate;
 
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false; 
+  bool _isLoading = false;
 
   Future<void> _selectDate(BuildContext context, {required bool isEntryDate}) async {
     final pickedDate = await showDatePicker(
@@ -70,7 +69,7 @@ class _AddBatchFormState extends State<AddBatchForm> {
 
     if (_feedArrivalDate!.isAfter(_entryDate!)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('A data de chegada da ração não pode ser anterior à data de início do lote')),
+        const SnackBar(content: Text('A data de chegada da ração não pode ser posterior à data de início do lote')),
       );
       return;
     }
@@ -90,18 +89,19 @@ class _AddBatchFormState extends State<AddBatchForm> {
     });
 
     try {
-      final batchName = _batchNameController.text.isEmpty
-          ? 'Lote ${DateFormat('MMMM yyyy', 'pt_BR').format(_entryDate!)}'
-          : _batchNameController.text;
+      final batchName = 'Lote ${DateFormat('MMMM yyyy', 'pt_BR').format(_entryDate!)}';
 
       final batch = BatchDTO(
         id: '',
+        name: batchName,
         aviaryId: widget.aviaryId,
         entryDate: _entryDate!,
         birdCount: birdCount,
         feedRecords: [
           {'date': _feedArrivalDate!.toIso8601String(), 'quantity': feedQuantity}
         ],
+        mortalityRecords: [],
+        weightRecords: [],
       );
 
       await _batchApplication.saveBatch(batch);
@@ -126,7 +126,6 @@ class _AddBatchFormState extends State<AddBatchForm> {
   void dispose() {
     _birdCountController.dispose();
     _feedQuantityController.dispose();
-    _batchNameController.dispose();
     super.dispose();
   }
 
@@ -135,7 +134,7 @@ class _AddBatchFormState extends State<AddBatchForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Adicionar Lote'),
-        backgroundColor: const Color(0xFF18234E),
+        backgroundColor: Color.fromARGB(255, 64, 95, 218),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -145,10 +144,6 @@ class _AddBatchFormState extends State<AddBatchForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextFormField(
-                  controller: _batchNameController,
-                  decoration: const InputDecoration(labelText: 'Nome do Lote (opcional)'),
-                ),
                 TextFormField(
                   controller: _birdCountController,
                   decoration: const InputDecoration(labelText: 'Quantidade de Aves'),

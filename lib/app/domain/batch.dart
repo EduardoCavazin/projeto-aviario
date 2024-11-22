@@ -3,6 +3,7 @@ import 'package:projeto_ddm/app/domain/aviary.dart';
 
 class Batch {
   String id;
+  String name;
   String aviaryId;
   DateTime entryDate;
   int birdCount;
@@ -12,6 +13,7 @@ class Batch {
 
   Batch({
     required this.id,
+    required this.name,
     required this.aviaryId,
     required this.entryDate,
     required this.birdCount,
@@ -25,6 +27,7 @@ class Batch {
 
   Batch._withoutValidation({
     required this.id,
+    required this.name,
     required this.aviaryId,
     required this.entryDate,
     required this.birdCount,
@@ -36,6 +39,7 @@ class Batch {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'name': name,
       'aviaryId': aviaryId,
       'entryDate': entryDate.toIso8601String(),
       'birdCount': birdCount,
@@ -48,6 +52,7 @@ class Batch {
   factory Batch.fromMap(Map<String, dynamic> map, String documentId) {
     return Batch._withoutValidation(
       id: documentId,
+      name: map['name'],
       aviaryId: map['aviaryId'],
       entryDate: DateTime.parse(map['entryDate']),
       birdCount: map['birdCount'],

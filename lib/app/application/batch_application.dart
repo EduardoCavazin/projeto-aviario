@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:projeto_ddm/app/domain/dto/batch_dto.dart';
 import 'package:projeto_ddm/app/database/batch_dao.dart';
 
@@ -40,9 +41,13 @@ class BatchApplication {
     }
   }
 
-  Future<BatchDTO> createBatch(String aviaryId, DateTime entryDate, int birdCount) async {
+  Future<BatchDTO> createBatch(
+      String aviaryId, DateTime entryDate, int birdCount, String batchName) async {
+    
+
     final batch = BatchDTO(
       id: '',
+      name: batchName,
       aviaryId: aviaryId,
       entryDate: entryDate,
       birdCount: birdCount,
@@ -50,6 +55,7 @@ class BatchApplication {
       mortalityRecords: [],
       weightRecords: [],
     );
+
     await saveBatch(batch);
     return batch;
   }
@@ -64,7 +70,8 @@ class BatchApplication {
     }
   }
 
-  Future<void> addFeedRecord(String batchId, Map<String, dynamic> feedRecord) async {
+  Future<void> addFeedRecord(
+      String batchId, Map<String, dynamic> feedRecord) async {
     try {
       await _batchDAO.addFeedRecord(batchId, feedRecord);
     } catch (e) {
@@ -73,7 +80,8 @@ class BatchApplication {
     }
   }
 
-  Future<void> addMortalityRecord(String batchId, Map<String, dynamic> mortalityRecord) async {
+  Future<void> addMortalityRecord(
+      String batchId, Map<String, dynamic> mortalityRecord) async {
     try {
       await _batchDAO.addMortalityRecord(batchId, mortalityRecord);
     } catch (e) {
@@ -82,7 +90,8 @@ class BatchApplication {
     }
   }
 
-  Future<void> addWeightRecord(String batchId, Map<String, dynamic> weightRecord) async {
+  Future<void> addWeightRecord(
+      String batchId, Map<String, dynamic> weightRecord) async {
     try {
       await _batchDAO.addWeightRecord(batchId, weightRecord);
     } catch (e) {

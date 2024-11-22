@@ -1,5 +1,6 @@
 class BatchDTO {
   String id;
+  String name;
   String aviaryId;
   DateTime entryDate;
   int birdCount;
@@ -9,6 +10,7 @@ class BatchDTO {
 
   BatchDTO({
     required this.id,
+    required this.name,
     required this.aviaryId,
     required this.entryDate,
     required this.birdCount,
@@ -20,6 +22,7 @@ class BatchDTO {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'name': name,
       'aviaryId': aviaryId,
       'entryDate': entryDate.toIso8601String(),
       'birdCount': birdCount,
@@ -32,6 +35,7 @@ class BatchDTO {
   factory BatchDTO.fromMap(Map<String, dynamic> map, String documentId) {
     return BatchDTO(
       id: documentId,
+      name: map['name'],
       aviaryId: map['aviaryId'],
       entryDate: DateTime.parse(map['entryDate']),
       birdCount: map['birdCount'],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_ddm/app/application/batch_application.dart';
 import 'package:projeto_ddm/app/domain/dto/batch_dto.dart';
 import 'package:projeto_ddm/app/widget/property/add_batch_form.dart';
+import 'package:projeto_ddm/app/widget/property/batch_screen_info.dart';
 
 class BatchScreen extends StatefulWidget {
   final String aviaryId;
@@ -52,8 +53,24 @@ class _BatchScreenState extends State<BatchScreen> {
         ),
       ),
     ).then((_) {
-      _loadBatches(); 
+      _loadBatches();
     });
+  }
+
+  void _navigateToBatchInfo(BatchDTO batch) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BatchScreenInfo(
+          batchName: batch.name,
+          birdCount: batch.birdCount,
+          entryDate: batch.entryDate,
+          feedRecords: batch.feedRecords,
+          mortalityRecords: batch.mortalityRecords,
+          weightRecords: batch.weightRecords,
+        ),
+      ),
+    );
   }
 
   @override
@@ -70,8 +87,10 @@ class _BatchScreenState extends State<BatchScreen> {
               itemBuilder: (context, index) {
                 final batch = _batches[index];
                 return ListTile(
-                  title: Text('Lote ${batch.entryDate.toLocal().toIso8601String().split('T').first}'),
+                  title: Text(
+                      'Lote ${batch.entryDate.toLocal().toIso8601String().split('T').first}'),
                   subtitle: Text('${batch.birdCount} aves'),
+                  onTap: () => _navigateToBatchInfo(batch),
                 );
               },
             ),
