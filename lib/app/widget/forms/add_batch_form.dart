@@ -91,6 +91,8 @@ class _AddBatchFormState extends State<AddBatchForm> {
     try {
       final batchName = 'Lote ${DateFormat('MMMM yyyy', 'pt_BR').format(_entryDate!)}';
 
+      print("Tentando salvar");
+
       final batch = BatchDTO(
         id: '',
         name: batchName,

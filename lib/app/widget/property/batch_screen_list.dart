@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_ddm/app/application/batch_application.dart';
 import 'package:projeto_ddm/app/domain/dto/batch_dto.dart';
-import 'package:projeto_ddm/app/widget/property/add_batch_form.dart';
+import 'package:projeto_ddm/app/widget/forms/add_batch_form.dart';
 import 'package:projeto_ddm/app/widget/property/batch_screen_info.dart';
 
 class BatchScreen extends StatefulWidget {
@@ -62,12 +62,13 @@ class _BatchScreenState extends State<BatchScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => BatchScreenInfo(
+          batchId: batch.id,
           batchName: batch.name,
-          birdCount: batch.birdCount,
+          /* birdCount: batch.birdCount,
           entryDate: batch.entryDate,
           feedRecords: batch.feedRecords,
           mortalityRecords: batch.mortalityRecords,
-          weightRecords: batch.weightRecords,
+          weightRecords: batch.weightRecords, */
         ),
       ),
     );
