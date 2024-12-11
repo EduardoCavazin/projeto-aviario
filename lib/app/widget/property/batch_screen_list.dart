@@ -32,7 +32,8 @@ class _BatchScreenState extends State<BatchScreen> {
 
   Future<void> _loadBatches() async {
     try {
-      final batches = await _batchApplication.getAllBatchesByAviary(widget.aviaryId);
+      final batches =
+          await _batchApplication.getAllBatchesByAviary(widget.aviaryId);
       setState(() {
         _batches = batches;
       });
@@ -64,11 +65,11 @@ class _BatchScreenState extends State<BatchScreen> {
         builder: (context) => BatchScreenInfo(
           batchId: batch.id,
           batchName: batch.name,
-          /* birdCount: batch.birdCount,
+          birdCount: batch.birdCount,
           entryDate: batch.entryDate,
           feedRecords: batch.feedRecords,
           mortalityRecords: batch.mortalityRecords,
-          weightRecords: batch.weightRecords, */
+          weightRecords: batch.weightRecords,
         ),
       ),
     );
