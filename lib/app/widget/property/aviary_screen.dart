@@ -48,47 +48,15 @@ class _AviaryScreenState extends State<AviaryScreen> {
     }
   }
 
-  Future<void> _addAviary() async {
-    if (_nameController.text.isEmpty || _capacityController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Todos os campos são obrigatórios')),
-      );
-      return;
-    }
-
-    final capacity = int.tryParse(_capacityController.text);
-    if (capacity == null || capacity <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Informe um número válido para a capacidade')),
-      );
-      return;
-    }
-
-    try {
-      await _aviaryApplication.createAviary(
-        name: _nameController.text,
-        capacity: capacity,
-        propertyId: widget.propertyId,
-      );
-
+  Future<void> _addOrEditAviary({AviaryDTO? aviary}) async {
+    if (aviary != null) {
+      _nameController.text = aviary.name;
+      _capacityController.text = aviary.capacity.toString();
+    } else {
       _nameController.clear();
       _capacityController.clear();
-      _loadAviaries();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Aviário adicionado com sucesso!')),
-      );
-
-      Navigator.of(context).pop();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao adicionar aviário')),
-      );
     }
-  }
 
-  void _showAddAviaryForm() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -114,9 +82,80 @@ class _AviaryScreenState extends State<AviaryScreen> {
                 keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: _addAviary,
-                child: const Text('Salvar Aviário'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    onPressed: () async {
+                      final capacity = int.tryParse(_capacityController.text);
+                      if (capacity == null || capacity <= 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Capacidade inválida')),
+                        );
+                        return;
+                      }
+
+                      try {
+                        if (aviary == null) {
+                          await _aviaryApplication.createAviary(
+                            name: _nameController.text,
+                            capacity: capacity,
+                            propertyId: widget.propertyId,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text('Aviário adicionado com sucesso!')),
+                          );
+                        } else {
+                          aviary.name = _nameController.text;
+                          aviary.capacity = capacity;
+                          await _aviaryApplication.updateAviary(
+                            aviary.id,
+                            aviary.name,
+                            aviary.capacity,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Aviário editado com sucesso!')),
+                          );
+                        }
+                        _loadAviaries();
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Erro ao salvar aviário')),
+                        );
+                      }
+                    },
+                    child: Text(aviary == null ? 'Salvar' : 'Editar'),
+                  ),
+                  if (aviary != null)
+                    ElevatedButton(
+                      style:
+                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      onPressed: () async {
+                        try {
+                          await _aviaryApplication.deleteAviary(aviary.id);
+                          _loadAviaries();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Aviário excluído com sucesso!')),
+                          );
+                          Navigator.of(context).pop();
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Erro ao excluir aviário')),
+                          );
+                        }
+                      },
+                      child: const Text('Excluir'),
+                    ),
+                ],
               ),
             ],
           ),
@@ -139,7 +178,7 @@ class _AviaryScreenState extends State<AviaryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Aviários - ${widget.propertyName}'),
-        backgroundColor: Color.fromARGB(255, 64, 95, 218),
+        backgroundColor: const Color.fromARGB(255, 64, 95, 218),
       ),
       body: _aviaries.isEmpty
           ? const Center(child: Text('Nenhum aviário cadastrado.'))
@@ -162,13 +201,17 @@ class _AviaryScreenState extends State<AviaryScreen> {
                       ),
                     );
                   },
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => _addOrEditAviary(aviary: aviary),
+                  ),
                 );
               },
             ),
       floatingActionButton: isAddButtonDisabled
           ? null
           : FloatingActionButton(
-              onPressed: _showAddAviaryForm,
+              onPressed: () => _addOrEditAviary(),
               backgroundColor: const Color(0xFF18234E),
               child: const Icon(Icons.add),
             ),
