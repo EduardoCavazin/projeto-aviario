@@ -4,8 +4,9 @@ import 'package:projeto_ddm/app/application/batch_application.dart';
 
 class AddMortalityForm extends StatefulWidget {
   final String batchId;
+  final Map<String, dynamic>? record;
 
-  const AddMortalityForm({Key? key, required this.batchId}) : super(key: key);
+  const AddMortalityForm({Key? key, required this.batchId, this.record}) : super(key: key);
 
   @override
   _AddMortalityFormState createState() => _AddMortalityFormState();
@@ -18,6 +19,15 @@ class _AddMortalityFormState extends State<AddMortalityForm> {
   DateTime? _mortalityDate;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.record != null) {
+      _mortalityCountController.text = widget.record!['count'].toString();
+      _mortalityDate = DateTime.parse(widget.record!['date']);
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final pickedDate = await showDatePicker(

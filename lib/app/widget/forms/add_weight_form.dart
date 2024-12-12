@@ -4,8 +4,9 @@ import 'package:projeto_ddm/app/application/batch_application.dart';
 
 class AddWeightForm extends StatefulWidget {
   final String batchId;
+  final Map<String, dynamic>? record;
 
-  const AddWeightForm({Key? key, required this.batchId}) : super(key: key);
+  const AddWeightForm({Key? key, required this.batchId, this.record}) : super(key: key);
 
   @override
   _AddWeightFormState createState() => _AddWeightFormState();
@@ -18,6 +19,15 @@ class _AddWeightFormState extends State<AddWeightForm> {
   DateTime? _weightDate;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.record != null) {
+      _weightController.text = widget.record!['weight'].toString();
+      _weightDate = DateTime.parse(widget.record!['date']);
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final pickedDate = await showDatePicker(

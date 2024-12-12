@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import 'package:projeto_ddm/app/widget/forms/add_feed_form.dart';
 import 'package:projeto_ddm/app/widget/forms/add_mortality_form.dart';
 import 'package:projeto_ddm/app/widget/forms/add_weight_form.dart';
@@ -23,6 +23,74 @@ class BatchScreenInfo extends StatelessWidget {
     required this.mortalityRecords,
     required this.weightRecords,
   }) : super(key: key);
+
+  void _navigateToEditForm(BuildContext context, String type, Map<String, dynamic> record) {
+    Widget form;
+    switch (type) {
+      case 'ração':
+        form = AddFeedForm(batchId: batchId, record: record);
+        break;
+      case 'mortalidade':
+        form = AddMortalityForm(batchId: batchId, record: record);
+        break;
+      case 'peso':
+        form = AddWeightForm(batchId: batchId, record: record);
+        break;
+      default:
+        return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => form),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(batchName),
+        backgroundColor: const Color.fromARGB(255, 64, 95, 218),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              elevation: 3,
+              margin: const EdgeInsets.only(bottom: 16.0),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Lote: $batchName',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text('Quantidade de Aves: $birdCount'),
+                    const SizedBox(height: 8),
+                    Text('Data de Entrada: ${DateFormat('dd/MM/yyyy').format(entryDate)}'),
+                  ],
+                ),
+              ),
+            ),
+            _buildDropdown(context, 'Ração', feedRecords, 'quantity', 'ração'),
+            _buildDropdown(context, 'Mortalidade', mortalityRecords, 'count', 'mortalidade'),
+            _buildDropdown(context, 'Peso', weightRecords, 'weight', 'peso'),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddInfoOptions(context),
+        backgroundColor: const Color(0xFF18234E),
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
 
   void _showAddInfoOptions(BuildContext context) {
     showModalBottomSheet(
@@ -82,54 +150,7 @@ class BatchScreenInfo extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(batchName),
-        backgroundColor: const Color.fromARGB(255, 64, 95, 218),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Card(
-              elevation: 3,
-              margin: const EdgeInsets.only(bottom: 16.0),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Lote: $batchName',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text('Quantidade de Aves: $birdCount'),
-                    const SizedBox(height: 8),
-                    Text('Data de Entrada: ${DateFormat('dd/MM/yyyy').format(entryDate)}'),
-                  ],
-                ),
-              ),
-            ),
-            _buildDropdown('Ração', feedRecords, 'quantity'),
-            _buildDropdown('Mortalidade', mortalityRecords, 'count'),
-            _buildDropdown('Peso', weightRecords, 'weight'),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddInfoOptions(context),
-        backgroundColor: const Color(0xFF18234E),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _buildDropdown(
-      String title, List<Map<String, dynamic>> records, String valueKey) {
+  Widget _buildDropdown(BuildContext context, String title, List<Map<String, dynamic>> records, String valueKey, String type) {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 5.0),
@@ -149,10 +170,11 @@ class BatchScreenInfo extends StatelessWidget {
               return ListTile(
                 dense: true,
                 leading: const Icon(Icons.info_outline),
-                title: Text('Valor: ${record[valueKey]}'),
-                subtitle: Text(
+                title: Text(
                   'Data: ${DateFormat('dd/MM/yyyy').format(DateTime.parse(record['date']))}',
-                )
+                ),
+                subtitle: Text('Valor: ${record[valueKey]}'),
+                onTap: () => _navigateToEditForm(context, type, record),
               );
             }).toList(),
         ],

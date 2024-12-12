@@ -4,8 +4,10 @@ import 'package:projeto_ddm/app/application/batch_application.dart';
 
 class AddFeedForm extends StatefulWidget {
   final String batchId;
+  final Map<String, dynamic>? record; 
 
-  const AddFeedForm({Key? key, required this.batchId}) : super(key: key);
+  const AddFeedForm({Key? key, required this.batchId, this.record})
+      : super(key: key);
 
   @override
   _AddFeedFormState createState() => _AddFeedFormState();
@@ -19,6 +21,15 @@ class _AddFeedFormState extends State<AddFeedForm> {
 
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.record != null) {
+      _quantityController.text = widget.record!['quantity'].toString();
+      _recordDate = DateTime.parse(widget.record!['date']);
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final pickedDate = await showDatePicker(
@@ -62,12 +73,14 @@ class _AddFeedFormState extends State<AddFeedForm> {
       await _batchApplication.addFeedRecord(widget.batchId, feedRecord);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Registro de ração adicionado com sucesso!')),
+        SnackBar(
+          content: Text(widget.record == null
+              ? 'Registro de ração adicionado com sucesso!'
+              : 'Registro de ração atualizado com sucesso!'),
+        ),
       );
 
-      Navigator.of(context)
-          .pop(); 
+      Navigator.of(context).pop();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao salvar o registro: $e')),
@@ -89,7 +102,9 @@ class _AddFeedFormState extends State<AddFeedForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Adicionar Registro de Ração'),
+        title: Text(widget.record == null
+            ? 'Adicionar Registro de Ração'
+            : 'Editar Registro de Ração'),
         backgroundColor: const Color.fromARGB(255, 64, 95, 218),
       ),
       body: Padding(
